@@ -1,0 +1,37 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agreement: <https://github.com/diogocaspary/cortex-universal/ontology/agreement#> .
+@prefix asset: <https://github.com/diogocaspary/cortex-universal/ontology/asset#> .
+@prefix offering: <https://github.com/diogocaspary/cortex-universal/ontology/offering#> .
+@prefix party: <https://github.com/diogocaspary/cortex-universal/ontology/party#> .
+@prefix supply: <https://github.com/diogocaspary/cortex-universal/ontology/supply-chain#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/supply-chain>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/agreement>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/asset>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/offering>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/party> ;
+    owl:versionInfo "0.1.0" .
+
+supply:SupplierAccount a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Supplier account"@en .
+supply:Procurement a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Procurement"@en .
+supply:PurchaseOrder a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Purchase order"@en .
+supply:PurchaseOrderItem a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Purchase order item"@en .
+supply:Shipment a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Shipment"@en .
+supply:Warehouse a owl:Class ; rdfs:subClassOf cubo:Place ; rdfs:label "Warehouse"@en .
+supply:InventoryMovement a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Inventory movement"@en .
+supply:SupplyAgreement a owl:Class ; rdfs:subClassOf agreement:Agreement ; rdfs:label "Supply agreement"@en .
+
+supply:supplierOrganization a owl:ObjectProperty ; rdfs:domain supply:SupplierAccount ; rdfs:range party:Organization ; rdfs:label "supplier organization"@en .
+supply:orderedFrom a owl:ObjectProperty ; rdfs:domain supply:PurchaseOrder ; rdfs:range supply:SupplierAccount ; rdfs:label "ordered from"@en .
+supply:hasOrderItem a owl:ObjectProperty ; rdfs:domain supply:PurchaseOrder ; rdfs:range supply:PurchaseOrderItem ; rdfs:label "has order item"@en .
+supply:orderedProduct a owl:ObjectProperty ; rdfs:domain supply:PurchaseOrderItem ; rdfs:range offering:Product ; rdfs:label "ordered product"@en .
+supply:shipsOrder a owl:ObjectProperty ; rdfs:domain supply:Shipment ; rdfs:range supply:PurchaseOrder ; rdfs:label "ships order"@en .
+supply:movementItem a owl:ObjectProperty ; rdfs:domain supply:InventoryMovement ; rdfs:range asset:InventoryItem ; rdfs:label "movement item"@en .
+supply:origin a owl:ObjectProperty ; rdfs:domain supply:Shipment ; rdfs:range cubo:Place ; rdfs:label "origin"@en .
+supply:destination a owl:ObjectProperty ; rdfs:domain supply:Shipment ; rdfs:range cubo:Place ; rdfs:label "destination"@en .
+supply:orderedQuantity a owl:DatatypeProperty ; rdfs:domain supply:PurchaseOrderItem ; rdfs:range xsd:decimal ; rdfs:label "ordered quantity"@en .

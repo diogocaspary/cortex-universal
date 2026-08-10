@@ -1,0 +1,76 @@
+@prefix awf: <https://github.com/diogocaspary/cortex-universal/ontology/agent-workforce#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix metric: <https://github.com/diogocaspary/cortex-universal/ontology/metric#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/agent-workforce>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/agent> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/metric> ;
+    rdfs:label "Governed agent workforce ontology"@en .
+
+awf:AgentOrganization a owl:Class ; rdfs:subClassOf cubo:Organization, org:Organization ; rdfs:label "Agent organization"@en .
+awf:Mission a owl:Class ; rdfs:subClassOf cubo:Goal ; rdfs:label "Governed mission"@en .
+awf:AgenticGoal a owl:Class ; rdfs:subClassOf cubo:Goal ; rdfs:label "Agentic goal"@en .
+awf:SuccessCriterion a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Success criterion"@en .
+awf:AgentRole a owl:Class ; rdfs:subClassOf org:Role ; rdfs:label "Governed agent role"@en .
+awf:AgentAssignment a owl:Class ; rdfs:subClassOf org:Membership ; rdfs:label "Agent assignment"@en .
+awf:WorkItem a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Governed work item"@en .
+awf:WorkDependency a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Work dependency"@en .
+awf:WorkLease a owl:Class ; rdfs:subClassOf cubo:State ; rdfs:label "Exclusive work lease"@en .
+awf:Routine a owl:Class ; rdfs:subClassOf agent:Plan ; rdfs:label "Governed recurring routine"@en .
+awf:Heartbeat a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Agent heartbeat"@en .
+awf:BudgetPolicy a owl:Class ; rdfs:subClassOf cubo:Policy ; rdfs:label "Workforce budget policy"@en .
+awf:CostEvent a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Measured cost event"@en .
+awf:WorkArtifact a owl:Class ; rdfs:subClassOf prov:Entity ; rdfs:label "Evidence-bearing work artifact"@en .
+awf:ReviewGate a owl:Class ; rdfs:subClassOf cubo:Policy ; rdfs:label "Independent review gate"@en .
+awf:AgentEvaluation a owl:Class ; rdfs:subClassOf metric:Measurement ; rdfs:label "Evidence-based agent evaluation"@en .
+awf:SkillManifest a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Pinned skill manifest"@en .
+awf:OrganizationTemplate a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Portable organization template"@en .
+
+awf:hasMission a owl:ObjectProperty ; rdfs:domain awf:AgentOrganization ; rdfs:range awf:Mission .
+awf:hasGoal a owl:ObjectProperty ; rdfs:domain awf:AgentOrganization ; rdfs:range awf:AgenticGoal .
+awf:parentGoal a owl:ObjectProperty, owl:IrreflexiveProperty ; rdfs:domain awf:AgenticGoal ; rdfs:range awf:AgenticGoal .
+awf:hasSuccessCriterion a owl:ObjectProperty ; rdfs:domain awf:AgenticGoal ; rdfs:range awf:SuccessCriterion .
+awf:hasAcceptanceCriterion a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:SuccessCriterion .
+awf:ownedBy a owl:ObjectProperty ; rdfs:domain awf:AgenticGoal ; rdfs:range agent:AIAgent .
+awf:servesGoal a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:AgenticGoal .
+awf:assignedTo a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain awf:WorkItem ; rdfs:range agent:AIAgent .
+awf:reportsTo a owl:ObjectProperty, owl:IrreflexiveProperty ; rdfs:domain agent:AIAgent ; rdfs:range agent:AIAgent .
+awf:requiresCapability a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range agent:Capability .
+awf:blockedBy a owl:ObjectProperty, owl:IrreflexiveProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:WorkItem .
+awf:hasLease a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:WorkLease .
+awf:producedArtifact a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:WorkArtifact .
+awf:requiresReview a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:ReviewGate .
+awf:materializesWork a owl:ObjectProperty ; rdfs:domain awf:Routine ; rdfs:range awf:WorkItem .
+awf:governedByBudget a owl:ObjectProperty ; rdfs:domain awf:WorkItem ; rdfs:range awf:BudgetPolicy .
+awf:measuresAgent a owl:ObjectProperty ; rdfs:domain awf:AgentEvaluation ; rdfs:range agent:AIAgent .
+awf:evaluatesWork a owl:ObjectProperty ; rdfs:domain awf:AgentEvaluation ; rdfs:range awf:WorkItem .
+awf:usesSkill a owl:ObjectProperty ; rdfs:domain agent:AIAgent ; rdfs:range awf:SkillManifest .
+awf:observesAgent a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain awf:Heartbeat ; rdfs:range agent:AIAgent .
+awf:costForAgent a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain awf:CostEvent ; rdfs:range agent:AIAgent .
+awf:costForWork a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain awf:CostEvent ; rdfs:range awf:WorkItem .
+
+awf:status a owl:DatatypeProperty ; rdfs:range xsd:string .
+awf:priority a owl:DatatypeProperty ; rdfs:domain awf:WorkItem ; rdfs:range xsd:integer .
+awf:leaseExpiresAt a owl:DatatypeProperty ; rdfs:domain awf:WorkLease ; rdfs:range xsd:dateTime .
+awf:intervalSeconds a owl:DatatypeProperty ; rdfs:domain awf:Routine ; rdfs:range xsd:integer .
+awf:nextRunAt a owl:DatatypeProperty ; rdfs:domain awf:Routine ; rdfs:range xsd:dateTime .
+awf:inputTokens a owl:DatatypeProperty ; rdfs:domain awf:CostEvent ; rdfs:range xsd:nonNegativeInteger .
+awf:outputTokens a owl:DatatypeProperty ; rdfs:domain awf:CostEvent ; rdfs:range xsd:nonNegativeInteger .
+awf:costMicroUsd a owl:DatatypeProperty ; rdfs:domain awf:CostEvent ; rdfs:range xsd:nonNegativeInteger .
+awf:measurementStatus a owl:DatatypeProperty ; rdfs:domain awf:CostEvent ; rdfs:range xsd:string .
+awf:maxTotalTokens a owl:DatatypeProperty ; rdfs:domain awf:BudgetPolicy ; rdfs:range xsd:positiveInteger .
+awf:maxCostMicroUsd a owl:DatatypeProperty ; rdfs:domain awf:BudgetPolicy ; rdfs:range xsd:nonNegativeInteger .
+awf:maxDurationMs a owl:DatatypeProperty ; rdfs:domain awf:BudgetPolicy ; rdfs:range xsd:positiveInteger .
+awf:contentHash a owl:DatatypeProperty ; rdfs:domain awf:SkillManifest ; rdfs:range xsd:string .
+awf:sourceRevision a owl:DatatypeProperty ; rdfs:domain awf:SkillManifest ; rdfs:range xsd:string .
+awf:observedAt a owl:DatatypeProperty ; rdfs:domain awf:Heartbeat ; rdfs:range xsd:dateTime .
+awf:evidenceReference a owl:DatatypeProperty ; rdfs:range xsd:anyURI .

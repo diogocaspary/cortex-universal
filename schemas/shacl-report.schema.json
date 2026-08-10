@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/shacl-report.schema.json",
+  "title": "SHACL conformance report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["conforms", "resultCount", "results"],
+  "properties": {
+    "conforms": { "type": "boolean" },
+    "resultCount": { "type": "integer", "minimum": 0 },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "focusNode",
+          "path",
+          "value",
+          "severity",
+          "sourceConstraintComponent",
+          "sourceShape",
+          "messages"
+        ],
+        "properties": {
+          "focusNode": { "type": "string" },
+          "path": { "type": ["string", "null"] },
+          "value": { "type": ["string", "null"] },
+          "severity": { "type": "string" },
+          "sourceConstraintComponent": { "type": "string" },
+          "sourceShape": { "type": "string" },
+          "messages": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

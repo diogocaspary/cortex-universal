@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/work-item-transition.schema.json",
+  "title": "Governed work-item state transition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "brain_id",
+    "classification",
+    "actor_agent_id",
+    "target_status",
+    "evidence_ids"
+  ],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "actor_agent_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "target_status": {
+      "enum": [
+        "ready",
+        "in_progress",
+        "blocked",
+        "review",
+        "approved",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "evidence_ids": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "reviewer_agent_id": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z][a-z0-9-]{1,63}$"
+    }
+  }
+}

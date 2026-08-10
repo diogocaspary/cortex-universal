@@ -1,0 +1,121 @@
+@prefix attention: <https://github.com/diogocaspary/cortex-universal/ontology/attention#> .
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix learning: <https://github.com/diogocaspary/cortex-universal/ontology/learning#> .
+@prefix meta: <https://github.com/diogocaspary/cortex-universal/ontology/metacognition#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix world: <https://github.com/diogocaspary/cortex-universal/ontology/world-model#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cognition:CognitiveCycleShape
+    a sh:NodeShape ;
+    sh:targetClass cognition:CognitiveCycle ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path cognition:hasCognitiveStep ; sh:minCount 1 ; sh:class cognition:CognitiveStep ] ;
+    sh:property [ sh:path cognition:cycleStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+cognition:CognitiveStepShape
+    a sh:NodeShape ;
+    sh:targetClass cognition:CognitiveStep ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path cognition:hasCognitivePhase ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cognition:CognitivePhase ] ;
+    sh:property [ sh:path cognition:sequenceNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ] ;
+    sh:property [ sh:path cubo:occurredAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+attention:AttentionSelectionShape
+    a sh:NodeShape ;
+    sh:targetClass attention:AttentionSelection ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path attention:selectedCandidate ; sh:minCount 1 ; sh:class attention:AttentionCandidate ] ;
+    sh:property [ sh:path attention:fillsWorkingSet ; sh:minCount 1 ; sh:maxCount 1 ; sh:class attention:WorkingSet ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+attention:AttentionCandidateShape
+    a sh:NodeShape ;
+    sh:targetClass attention:AttentionCandidate ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path cubo:derivedFrom ; sh:minCount 1 ; sh:class cubo:Source ] ;
+    sh:property [ sh:path attention:candidateContent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Entity ] ;
+    sh:property [ sh:path attention:relevanceScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path attention:noveltyScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path attention:urgencyScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path attention:uncertaintyScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+world:PredictionShape
+    a sh:NodeShape ;
+    sh:targetClass world:Prediction ;
+    sh:property [ sh:path world:predictsState ; sh:minCount 1 ; sh:maxCount 1 ; sh:class world:WorldState ] ;
+    sh:property [ sh:path world:expectedValue ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] ;
+    sh:property [ sh:path cubo:supportedBy ; sh:minCount 1 ; sh:class cubo:Evidence ] .
+
+world:ObservationShape
+    a sh:NodeShape ;
+    sh:targetClass world:Observation ;
+    sh:property [ sh:path world:observesState ; sh:minCount 1 ; sh:maxCount 1 ; sh:class world:WorldState ] ;
+    sh:property [ sh:path world:observedValue ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ] .
+
+world:PredictionErrorShape
+    a sh:NodeShape ;
+    sh:targetClass world:PredictionError ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path world:comparesPrediction ; sh:minCount 1 ; sh:maxCount 1 ; sh:class world:Prediction ] ;
+    sh:property [ sh:path world:comparesObservation ; sh:minCount 1 ; sh:maxCount 1 ; sh:class world:Observation ] ;
+    sh:property [ sh:path world:normalizedError ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+meta:ConfidenceJudgmentShape
+    a sh:NodeShape ;
+    sh:targetClass meta:ConfidenceJudgment ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path meta:reportedConfidence ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path meta:wasCorrect ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:boolean ] ;
+    sh:property [ sh:path cubo:supportedBy ; sh:minCount 1 ; sh:class cubo:Evidence ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+meta:CalibrationAssessmentShape
+    a sh:NodeShape ;
+    sh:targetClass meta:CalibrationAssessment ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path meta:hasConfidenceSample ; sh:minCount 1 ; sh:class meta:ConfidenceJudgment ] ;
+    sh:property [ sh:path meta:brierScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path meta:expectedCalibrationError ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path meta:calibrationBias ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive -1 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+learning:ConsolidationProposalShape
+    a sh:NodeShape ;
+    sh:targetClass learning:ConsolidationProposal ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path learning:basedOnReplay ; sh:minCount 1 ; sh:class learning:ReplayBatch ] ;
+    sh:property [ sh:path learning:reviewStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:hasValue "review_required" ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+learning:ReplayCandidateShape
+    a sh:NodeShape ;
+    sh:targetClass learning:ReplayCandidate ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path learning:sourcedFromMemory ; sh:minCount 1 ; sh:class <https://github.com/diogocaspary/cortex-universal/ontology/memory#MemoryRecord> ] ;
+    sh:property [ sh:path learning:replayScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path learning:surpriseScore ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path learning:evidenceQuality ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive 0 ; sh:maxInclusive 1 ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .

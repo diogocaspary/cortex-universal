@@ -1,0 +1,17 @@
+{
+  "request_id": "request:0001",
+  "tenant_id": "tenant-example",
+  "brain_id": "customer-operations",
+  "requester_id": "service:cortex-local-operator",
+  "query": "Quais evidências sustentam a situação atual do cliente?",
+  "purpose": "customer-support",
+  "modes": ["keyword", "vector", "graph"],
+  "query_embedding": [0.1, 0.2, 0.3],
+  "allowed_classifications": ["public", "internal"],
+  "limit": 10,
+  "as_of": "2026-08-09T12:00:00Z",
+  "filters": {
+    "source_ids": ["conformance-fixture"],
+    "modules": ["customer", "memory"]
+  }
+}

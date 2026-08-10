@@ -1,0 +1,33 @@
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix learning: <https://github.com/diogocaspary/cortex-universal/ontology/learning#> .
+@prefix memory: <https://github.com/diogocaspary/cortex-universal/ontology/memory#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/learning>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/memory> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/cognition> ;
+    owl:versionInfo "0.3.0" .
+
+learning:ReplayCandidate a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Replay candidate"@en .
+learning:ReplayBatch a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Governed replay batch"@en .
+learning:ConsolidationProposal a owl:Class ; rdfs:subClassOf cognition:ConsolidationJob ; rdfs:label "Consolidation proposal"@en .
+learning:LearningOutcome a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Observed learning outcome"@en .
+learning:LearnedPattern a owl:Class ; rdfs:subClassOf cubo:Claim ; rdfs:label "Evidence-bearing learned pattern"@en .
+
+learning:sourcedFromMemory a owl:ObjectProperty ; rdfs:domain learning:ReplayCandidate ; rdfs:range memory:MemoryRecord ; rdfs:label "sourced from memory"@en .
+learning:hasReplayCandidate a owl:ObjectProperty ; rdfs:domain learning:ReplayBatch ; rdfs:range learning:ReplayCandidate ; rdfs:label "has replay candidate"@en .
+learning:proposesPattern a owl:ObjectProperty ; rdfs:domain learning:ConsolidationProposal ; rdfs:range learning:LearnedPattern ; rdfs:label "proposes pattern"@en .
+learning:basedOnReplay a owl:ObjectProperty ; rdfs:domain learning:ConsolidationProposal ; rdfs:range learning:ReplayBatch ; rdfs:label "based on replay"@en .
+learning:evaluatedByOutcome a owl:ObjectProperty ; rdfs:domain learning:LearnedPattern ; rdfs:range learning:LearningOutcome ; rdfs:label "evaluated by outcome"@en .
+
+learning:replayScore a owl:DatatypeProperty ; rdfs:domain learning:ReplayCandidate ; rdfs:range xsd:decimal ; rdfs:label "replay score"@en .
+learning:surpriseScore a owl:DatatypeProperty ; rdfs:domain learning:ReplayCandidate ; rdfs:range xsd:decimal ; rdfs:label "surprise score"@en .
+learning:evidenceQuality a owl:DatatypeProperty ; rdfs:domain learning:ReplayCandidate ; rdfs:range xsd:decimal ; rdfs:label "evidence quality"@en .
+learning:reviewStatus a owl:DatatypeProperty ; rdfs:domain learning:ConsolidationProposal ; rdfs:range xsd:string ; rdfs:label "review status"@en .
+

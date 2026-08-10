@@ -1,0 +1,35 @@
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix world: <https://github.com/diogocaspary/cortex-universal/ontology/world-model#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/world-model>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/cognition> ;
+    owl:versionInfo "0.3.0" .
+
+world:WorldState a owl:Class ; rdfs:subClassOf cubo:State ; rdfs:label "Represented world state"@en .
+world:Prediction a owl:Class ; rdfs:subClassOf cognition:Hypothesis ; rdfs:label "Falsifiable prediction"@en .
+world:Observation a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "World observation"@en .
+world:PredictionError a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Prediction error"@en .
+world:CounterfactualScenario a owl:Class ; rdfs:subClassOf cubo:Context ; rdfs:label "Counterfactual scenario"@en .
+world:TransitionModel a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Governed transition model"@en .
+
+world:predictsState a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain world:Prediction ; rdfs:range world:WorldState ; rdfs:label "predicts state"@en .
+world:observesState a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain world:Observation ; rdfs:range world:WorldState ; rdfs:label "observes state"@en .
+world:comparesPrediction a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain world:PredictionError ; rdfs:range world:Prediction ; rdfs:label "compares prediction"@en .
+world:comparesObservation a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain world:PredictionError ; rdfs:range world:Observation ; rdfs:label "compares observation"@en .
+world:hasInitialState a owl:ObjectProperty ; rdfs:domain world:CounterfactualScenario ; rdfs:range world:WorldState ; rdfs:label "has initial state"@en .
+world:hasSimulatedState a owl:ObjectProperty ; rdfs:domain world:CounterfactualScenario ; rdfs:range world:WorldState ; rdfs:label "has simulated state"@en .
+world:usesTransitionModel a owl:ObjectProperty ; rdfs:domain world:CounterfactualScenario ; rdfs:range world:TransitionModel ; rdfs:label "uses transition model"@en .
+
+world:expectedValue a owl:DatatypeProperty ; rdfs:domain world:Prediction ; rdfs:range xsd:decimal ; rdfs:label "expected value"@en .
+world:observedValue a owl:DatatypeProperty ; rdfs:domain world:Observation ; rdfs:range xsd:decimal ; rdfs:label "observed value"@en .
+world:absoluteError a owl:DatatypeProperty ; rdfs:domain world:PredictionError ; rdfs:range xsd:decimal ; rdfs:label "absolute error"@en .
+world:normalizedError a owl:DatatypeProperty ; rdfs:domain world:PredictionError ; rdfs:range xsd:decimal ; rdfs:label "normalized error"@en .
+world:modelVersion a owl:DatatypeProperty ; rdfs:domain world:TransitionModel ; rdfs:range xsd:string ; rdfs:label "model version"@en .
+

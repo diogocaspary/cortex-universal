@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/skill-trust-registry.schema.json",
+  "title": "Trusted public keys for agent skill manifests",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "keys"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "keys": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key_id", "algorithm", "public_key_pem", "status", "owner", "reviewed_at"],
+        "properties": {
+          "key_id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+          "algorithm": { "const": "Ed25519" },
+          "public_key_pem": {
+            "type": "string",
+            "minLength": 100,
+            "maxLength": 512,
+            "pattern": "^-----BEGIN PUBLIC KEY-----[\\s\\S]+-----END PUBLIC KEY-----\\n?$"
+          },
+          "status": { "enum": ["active", "revoked"] },
+          "owner": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "reviewed_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

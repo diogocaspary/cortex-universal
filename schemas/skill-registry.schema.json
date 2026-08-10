@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/skill-registry.schema.json",
+  "title": "Pinned and capability-scoped agent skill registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "skills"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "skills": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/skill" }
+    }
+  },
+  "$defs": {
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "source_type",
+        "source_locator",
+        "source_revision",
+        "content_hash",
+        "permissions",
+        "network_access",
+        "secret_bindings",
+        "license",
+        "reviewed_at",
+        "reviewed_by"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 128 },
+        "source_type": { "enum": ["bundled", "git"] },
+        "source_locator": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "content_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "permissions": {
+          "type": "array",
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+        },
+        "network_access": { "type": "boolean" },
+        "secret_bindings": {
+          "type": "array",
+          "maxItems": 25,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" }
+        },
+        "license": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "reviewed_at": { "type": "string", "format": "date-time" },
+        "reviewed_by": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "signature": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["algorithm", "key_id", "value"],
+          "properties": {
+            "algorithm": { "const": "Ed25519" },
+            "key_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "value": { "type": "string", "pattern": "^[A-Za-z0-9+/]{86}==$" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "source_type": { "const": "git" } } },
+          "then": {
+            "required": ["signature"],
+            "properties": {
+              "source_locator": { "type": "string", "format": "uri", "maxLength": 2048 },
+              "signature": { "type": "object" }
+            }
+          },
+          "else": {
+            "properties": {
+              "source_locator": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

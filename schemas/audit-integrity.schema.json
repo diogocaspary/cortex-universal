@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/audit-integrity.schema.json",
+  "title": "Audit-chain integrity report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "brain_id",
+    "valid",
+    "checked_events",
+    "legacy_events",
+    "first_invalid_sequence",
+    "integrity_method"
+  ],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "valid": { "type": "boolean" },
+    "checked_events": { "type": "integer", "minimum": 0 },
+    "legacy_events": { "type": "integer", "minimum": 0 },
+    "first_invalid_sequence": { "type": ["integer", "null"], "minimum": 1 },
+    "integrity_method": { "enum": ["sha256-chain", "hmac-sha256-chain"] }
+  }
+}

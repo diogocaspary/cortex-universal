@@ -1,0 +1,27 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix asset: <https://github.com/diogocaspary/cortex-universal/ontology/asset#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/asset>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+asset:Asset a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Asset"@en .
+asset:PhysicalAsset a owl:Class ; rdfs:subClassOf asset:Asset ; rdfs:label "Physical asset"@en .
+asset:DigitalAsset a owl:Class ; rdfs:subClassOf asset:Asset ; rdfs:label "Digital asset"@en .
+asset:Equipment a owl:Class ; rdfs:subClassOf asset:PhysicalAsset ; rdfs:label "Equipment"@en .
+asset:InventoryItem a owl:Class ; rdfs:subClassOf asset:PhysicalAsset ; rdfs:label "Inventory item"@en .
+asset:AssetLocation a owl:Class ; rdfs:subClassOf cubo:Place ; rdfs:label "Asset location"@en .
+asset:AssetAssignment a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Asset assignment"@en .
+asset:MaintenanceActivity a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Maintenance activity"@en .
+
+asset:assetOwner a owl:ObjectProperty ; rdfs:domain asset:Asset ; rdfs:range cubo:Agent ; rdfs:label "asset owner"@en .
+asset:locatedAt a owl:ObjectProperty ; rdfs:domain asset:PhysicalAsset ; rdfs:range asset:AssetLocation ; rdfs:label "located at"@en .
+asset:assignedAsset a owl:ObjectProperty ; rdfs:domain asset:AssetAssignment ; rdfs:range asset:Asset ; rdfs:label "assigned asset"@en .
+asset:assignedTo a owl:ObjectProperty ; rdfs:domain asset:AssetAssignment ; rdfs:range cubo:Agent ; rdfs:label "assigned to"@en .
+asset:maintains a owl:ObjectProperty ; rdfs:domain asset:MaintenanceActivity ; rdfs:range asset:Asset ; rdfs:label "maintains"@en .
+asset:serialReference a owl:DatatypeProperty ; rdfs:domain asset:PhysicalAsset ; rdfs:range xsd:string ; rdfs:label "serial reference"@en .
+asset:quantityOnHand a owl:DatatypeProperty ; rdfs:domain asset:InventoryItem ; rdfs:range xsd:decimal ; rdfs:label "quantity on hand"@en .

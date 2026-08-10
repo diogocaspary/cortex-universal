@@ -1,0 +1,25 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix process: <https://github.com/diogocaspary/cortex-universal/ontology/process#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/process>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+process:Process a owl:Class ; rdfs:subClassOf cubo:Activity .
+process:Workflow a owl:Class ; rdfs:subClassOf process:Process .
+process:Case a owl:Class ; rdfs:subClassOf cubo:Entity .
+process:Task a owl:Class ; rdfs:subClassOf cubo:Activity .
+process:Step a owl:Class ; rdfs:subClassOf cubo:Activity .
+process:Transition a owl:Class ; rdfs:subClassOf cubo:Relationship .
+process:Dependency a owl:Class ; rdfs:subClassOf cubo:Relationship .
+process:WorkItem a owl:Class ; rdfs:subClassOf cubo:Entity .
+
+process:hasStep a owl:ObjectProperty ; rdfs:domain process:Process ; rdfs:range process:Step .
+process:hasTask a owl:ObjectProperty ; rdfs:domain process:Case ; rdfs:range process:Task .
+process:assignedTo a owl:ObjectProperty ; rdfs:domain process:Task ; rdfs:range cubo:Agent .
+process:dependsOn a owl:ObjectProperty ; rdfs:domain process:Task ; rdfs:range process:Task .
+process:fromState a owl:ObjectProperty ; rdfs:domain process:Transition ; rdfs:range cubo:State .
+process:toState a owl:ObjectProperty ; rdfs:domain process:Transition ; rdfs:range cubo:State .

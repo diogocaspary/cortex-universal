@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/ingestion-envelope.schema.json",
+  "title": "Trusted ingestion envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "tenant_id",
+    "brain_id",
+    "source_id",
+    "captured_at",
+    "classification",
+    "content_hash",
+    "media_type",
+    "content_reference",
+    "idempotency_key",
+    "provenance"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "source_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "content_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "media_type": { "type": "string", "pattern": "^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$" },
+    "content_reference": { "type": "string", "minLength": 3, "maxLength": 2048 },
+    "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 256 },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "system", "correlation_id"],
+      "properties": {
+        "actor_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "system": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "correlation_id": { "type": "string", "minLength": 8, "maxLength": 128 }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "key_id", "signed_at", "signature"],
+      "properties": {
+        "method": { "const": "ed25519" },
+        "key_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "signed_at": { "type": "string", "format": "date-time" },
+        "signature": { "type": "string", "pattern": "^[A-Za-z0-9_-]{64,256}$" }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "maxProperties": 32,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]{1,31}:[A-Za-z][A-Za-z0-9_.-]{0,63}$" },
+      "additionalProperties": true
+    }
+  }
+}

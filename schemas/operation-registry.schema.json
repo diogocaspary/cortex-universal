@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/operation-registry.schema.json",
+  "title": "Observable operation registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operations"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/operation" }
+    }
+  },
+  "$defs": {
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "transport",
+        "method",
+        "path",
+        "permission",
+        "audit_kind",
+        "side_effect",
+        "data_handling",
+        "correlation_fields",
+        "failure_codes"
+      ],
+      "properties": {
+        "operation_id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+        "transport": { "enum": ["http", "mcp-tool", "mcp-resource"] },
+        "method": { "enum": ["GET", "POST", "DELETE", "RESOURCE", "TOOL"] },
+        "path": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "permission": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_.-]{2,127}$"
+        },
+        "audit_kind": {
+          "enum": [
+            "none",
+            "authorization",
+            "ingestion",
+            "retrieval",
+            "agent_session",
+            "agent_handoff",
+            "guard",
+            "mcp",
+            "workforce"
+          ]
+        },
+        "side_effect": { "enum": ["none", "local-state", "external-prohibited"] },
+        "data_handling": {
+          "enum": ["public-metadata", "payload-free", "contract-validated", "tenant-scoped"]
+        },
+        "correlation_fields": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "request_id",
+              "trace_id",
+              "correlation_id",
+              "causation_id",
+              "proposal_id",
+              "decision_id",
+              "execution_id"
+            ]
+          }
+        },
+        "failure_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 32,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$" }
+        }
+      }
+    }
+  }
+}

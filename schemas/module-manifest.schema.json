@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/module-manifest.schema.json",
+  "title": "Cortex ontology module manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "ontology", "requires", "exports", "shapes"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "ontology": { "type": "string", "minLength": 1 },
+    "requires": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^[~^]?[0-9]+\\.[0-9]+\\.[0-9]+$" }
+    },
+    "exports": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "shapes": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+    "migrations": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/brain-activity.schema.json",
+  "title": "Traceable append-only brain activity event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sequence",
+    "occurred_at",
+    "tenant_id",
+    "brain_id",
+    "kind",
+    "status",
+    "subject_id",
+    "summary",
+    "actor_id",
+    "request_id",
+    "trace_id",
+    "correlation_id",
+    "causation_id",
+    "operation",
+    "details_hash",
+    "policy_fingerprint",
+    "previous_hash",
+    "event_hash",
+    "integrity_method"
+  ],
+  "properties": {
+    "sequence": { "type": "integer", "minimum": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "kind": {
+      "enum": [
+        "ingestion",
+        "retrieval",
+        "agent_session",
+        "agent_handoff",
+        "guard",
+        "effect",
+        "mcp",
+        "authorization",
+        "failure",
+        "workforce"
+      ]
+    },
+    "status": { "enum": ["accepted", "completed", "rejected", "proposed"] },
+    "subject_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "actor_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "request_id": { "type": "string", "minLength": 8, "maxLength": 256 },
+    "trace_id": { "type": "string", "pattern": "^trace:[A-Za-z0-9_.:-]{8,248}$" },
+    "correlation_id": { "type": "string", "minLength": 8, "maxLength": 256 },
+    "causation_id": { "type": ["string", "null"], "maxLength": 256 },
+    "operation": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "details_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "policy_fingerprint": { "type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$" },
+    "previous_hash": {
+      "type": ["string", "null"],
+      "pattern": "^(?:sha256-chain|hmac-sha256-chain):[a-f0-9]{64}$"
+    },
+    "event_hash": {
+      "type": "string",
+      "pattern": "^(?:sha256-chain|hmac-sha256-chain):[a-f0-9]{64}$"
+    },
+    "integrity_method": { "enum": ["sha256-chain", "hmac-sha256-chain"] }
+  }
+}

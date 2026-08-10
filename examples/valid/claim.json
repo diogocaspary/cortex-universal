@@ -1,0 +1,20 @@
+{
+  "id": "claim:customer-status:001",
+  "tenant_id": "tenant-1",
+  "subject": { "id": "customer-1", "type": "CustomerAccount" },
+  "predicate": "hasLifecycleStage",
+  "object": { "id": "active-customer", "type": "LifecycleStage" },
+  "status": "verified",
+  "source": {
+    "id": "crm-event-1001",
+    "system": "crm-primary",
+    "evidence_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "observed_at": "2026-08-08T14:30:02-03:00",
+  "valid_from": "2026-08-08T14:30:00-03:00",
+  "valid_until": null,
+  "confidence": 1,
+  "classification": "confidential",
+  "version": 1,
+  "extensions": {}
+}

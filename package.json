@@ -1,0 +1,75 @@
+{
+  "name": "@diogocaspary/cortex-universal",
+  "version": "0.6.0",
+  "private": true,
+  "description": "Vendor-neutral universal business ontology and secure semantic kernel reference implementation.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogocaspary/cortex-universal.git"
+  },
+  "homepage": "https://github.com/diogocaspary/cortex-universal#readme",
+  "bugs": {
+    "url": "https://github.com/diogocaspary/cortex-universal/issues"
+  },
+  "keywords": [
+    "ontology",
+    "rdf",
+    "owl",
+    "shacl",
+    "ai-governance",
+    "knowledge-graph"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run build:server && npm run build:dashboard",
+    "build:dashboard": "node --import tsx scripts/build-dashboard.ts",
+    "build:server": "tsc -p tsconfig.build.json",
+    "check": "npm run format:check && npm run typecheck && npm test && npm run validate",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "dev": "npm run build:dashboard && node --env-file=.env --watch --import tsx src/server.ts",
+    "mcp": "node --env-file=.env dist/mcp/stdio.js",
+    "mcp:dev": "node --env-file=.env --import tsx src/mcp/stdio.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "start": "node dist/server.js",
+    "pretest": "npm run build:dashboard",
+    "start:local": "node --env-file=.env dist/server.js",
+    "test": "vitest run",
+    "pretest:watch": "npm run build:dashboard",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "validate": "node --import tsx scripts/validate-repository.ts"
+  },
+  "dependencies": {
+    "@fastify/helmet": "13.1.0",
+    "@fastify/rate-limit": "11.2.0",
+    "@fastify/static": "10.1.3",
+    "@modelcontextprotocol/server": "2.0.0",
+    "@opentelemetry/api": "^1.9.1",
+    "@zazuko/env-node": "3.1.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "fastify": "5.11.3",
+    "pg": "^8.23.0",
+    "rdf-validate-shacl": "0.6.5",
+    "yaml": "2.9.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@antv/g6": "5.1.1",
+    "@rdfjs/types": "2.0.1",
+    "@types/node": "26.2.0",
+    "@types/pg": "^8.21.0",
+    "@types/three": "0.185.0",
+    "3d-force-graph": "1.80.0",
+    "esbuild": "0.28.2",
+    "prettier": "3.9.6",
+    "tsx": "4.23.11",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}

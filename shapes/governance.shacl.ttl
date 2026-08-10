@@ -1,0 +1,112 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix data: <https://github.com/diogocaspary/cortex-universal/ontology/data-governance#> .
+@prefix identity: <https://github.com/diogocaspary/cortex-universal/ontology/identity-access#> .
+@prefix policy: <https://github.com/diogocaspary/cortex-universal/ontology/policy#> .
+@prefix privacy: <https://github.com/diogocaspary/cortex-universal/ontology/privacy-compliance#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+identity:AccessGrantShape
+    a sh:NodeShape ;
+    sh:targetClass identity:AccessGrant ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path identity:grantedTo ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Agent ;
+    ] ;
+    sh:property [
+        sh:path identity:grantsPermission ;
+        sh:minCount 1 ;
+        sh:class policy:Permission ;
+    ] ;
+    sh:property [
+        sh:path cubo:validFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:lessThan cubo:validUntil ;
+    ] ;
+    sh:property [
+        sh:path cubo:validUntil ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+    ] .
+
+data:DataAssetShape
+    a sh:NodeShape ;
+    sh:targetClass data:DataAsset ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:DataClassification ;
+    ] ;
+    sh:property [
+        sh:path data:ownedBy ;
+        sh:minCount 1 ;
+        sh:class cubo:Agent ;
+    ] .
+
+privacy:ProcessingActivityShape
+    a sh:NodeShape ;
+    sh:targetClass privacy:ProcessingActivity ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path privacy:processesDataAsset ;
+        sh:minCount 1 ;
+        sh:class data:DataAsset ;
+    ] ;
+    sh:property [
+        sh:path privacy:hasPurpose ;
+        sh:minCount 1 ;
+        sh:class policy:ProcessingPurpose ;
+    ] ;
+    sh:property [
+        sh:path privacy:hasLegalBasis ;
+        sh:minCount 1 ;
+        sh:class policy:LegalBasis ;
+    ] ;
+    sh:property [
+        sh:path privacy:retentionDays ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+    ] .

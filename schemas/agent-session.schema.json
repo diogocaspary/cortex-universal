@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/agent-session.schema.json",
+  "title": "Governed multi-agent session request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tenant_id", "brain_id", "objective", "initial_agent"],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "objective": { "type": "string", "minLength": 8, "maxLength": 4096 },
+    "initial_agent": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" }
+  }
+}

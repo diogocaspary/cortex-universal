@@ -1,0 +1,24 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agreement: <https://github.com/diogocaspary/cortex-universal/ontology/agreement#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/agreement>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+agreement:Proposal a owl:Class ; rdfs:subClassOf cubo:Resource .
+agreement:Agreement a owl:Class ; rdfs:subClassOf cubo:Resource .
+agreement:Contract a owl:Class ; rdfs:subClassOf agreement:Agreement .
+agreement:Term a owl:Class ; rdfs:subClassOf cubo:Concept .
+agreement:Obligation a owl:Class ; rdfs:subClassOf cubo:Policy .
+agreement:Right a owl:Class ; rdfs:subClassOf cubo:Policy .
+agreement:ServiceLevelAgreement a owl:Class ; rdfs:subClassOf agreement:Agreement .
+agreement:Commitment a owl:Class ; rdfs:subClassOf cubo:Relationship .
+
+agreement:hasParty a owl:ObjectProperty ; rdfs:domain agreement:Agreement ; rdfs:range cubo:Agent .
+agreement:hasTerm a owl:ObjectProperty ; rdfs:domain agreement:Agreement ; rdfs:range agreement:Term .
+agreement:createsObligation a owl:ObjectProperty ; rdfs:domain agreement:Agreement ; rdfs:range agreement:Obligation .
+agreement:createsRight a owl:ObjectProperty ; rdfs:domain agreement:Agreement ; rdfs:range agreement:Right .
+agreement:proposes a owl:ObjectProperty ; rdfs:domain agreement:Proposal ; rdfs:range agreement:Agreement .

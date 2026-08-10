@@ -1,0 +1,97 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix tool: <https://github.com/diogocaspary/cortex-universal/ontology/tool-governance#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/tool-governance>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/agent> ;
+    owl:versionInfo "0.5.0" ;
+    rdfs:label "Cortex tool governance ontology"@en .
+
+tool:ToolProposal a owl:Class ;
+    rdfs:subClassOf cubo:Command ;
+    owl:disjointWith tool:EffectObservation ;
+    rdfs:label "Tool proposal"@en .
+
+tool:GuardDecision a owl:Class ;
+    rdfs:subClassOf cubo:Event ;
+    owl:disjointWith tool:EffectExecution ;
+    rdfs:label "Ontology guard decision"@en .
+
+tool:EffectExecution a owl:Class ;
+    rdfs:subClassOf agent:ActionExecution ;
+    rdfs:label "Isolated effect execution"@en .
+
+tool:EffectObservation a owl:Class ;
+    rdfs:subClassOf cubo:Evidence ;
+    rdfs:label "Observed effect from a system of record"@en .
+
+tool:OutcomeVerification a owl:Class ;
+    rdfs:subClassOf cubo:Activity ;
+    rdfs:label "Outcome verification"@en .
+
+tool:LoopBudget a owl:Class ;
+    rdfs:subClassOf cubo:Policy ;
+    rdfs:label "Bounded agent loop budget"@en .
+
+tool:proposesAction a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:ToolProposal ;
+    rdfs:range agent:ActionDefinition .
+
+tool:evaluatesProposal a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:GuardDecision ;
+    rdfs:range tool:ToolProposal .
+
+tool:authorizesExecution a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:GuardDecision ;
+    rdfs:range tool:EffectExecution .
+
+tool:executesProposal a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:EffectExecution ;
+    rdfs:range tool:ToolProposal .
+
+tool:observesExecution a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:EffectObservation ;
+    rdfs:range tool:EffectExecution .
+
+tool:verifiesObservation a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:OutcomeVerification ;
+    rdfs:range tool:EffectObservation .
+
+tool:usesLoopBudget a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:ToolProposal ;
+    rdfs:range tool:LoopBudget .
+
+tool:decisionEffect a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:GuardDecision ;
+    rdfs:range xsd:string .
+
+tool:proposalHash a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:ToolProposal ;
+    rdfs:range xsd:string .
+
+tool:argumentHash a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:ToolProposal ;
+    rdfs:range xsd:string .
+
+tool:observationHash a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:EffectObservation ;
+    rdfs:range xsd:string .
+
+tool:verificationStatus a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:OutcomeVerification ;
+    rdfs:range xsd:string .
+
+tool:maximumSteps a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:LoopBudget ;
+    rdfs:range xsd:positiveInteger .
+
+tool:maximumRepeatedActionCalls a owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain tool:LoopBudget ;
+    rdfs:range xsd:positiveInteger .
+

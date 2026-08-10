@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="Explorador local e somente leitura do grafo semântico Cortex Universal."
+    />
+    <title>Cortex Universal — Mapa ontológico verificável</title>
+    <link rel="stylesheet" href="/dashboard/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div>
+            <p class="eyebrow">CORTEX UNIVERSAL</p>
+            <h1>Mapa ontológico verificável</h1>
+          </div>
+        </div>
+        <div class="connection-area">
+          <span id="connection-status" class="status-pill" role="status">Desconectado</span>
+          <button id="open-auth" class="primary-button" type="button">
+            Conectar com segurança
+          </button>
+        </div>
+      </header>
+
+      <section class="metrics" aria-label="Resumo do grafo">
+        <article><span id="metric-nodes">—</span><small>Nós visíveis</small></article>
+        <article><span id="metric-edges">—</span><small>Conexões visíveis</small></article>
+        <article><span id="metric-modules">—</span><small>Módulos</small></article>
+        <article><span id="metric-classes">—</span><small>Classes semânticas</small></article>
+      </section>
+
+      <section class="workspace">
+        <aside class="control-panel" aria-label="Filtros do grafo">
+          <div class="section-heading">
+            <p class="eyebrow">NAVEGAÇÃO</p>
+            <h2>Mapa do Cortex</h2>
+          </div>
+
+          <label class="field-label" for="search">Buscar conceito</label>
+          <div class="search-field">
+            <span aria-hidden="true">⌕</span>
+            <input id="search" type="search" placeholder="Classe, política, memória…" disabled />
+          </div>
+
+          <label class="field-label" for="module-filter">Módulo</label>
+          <select id="module-filter" disabled>
+            <option value="">Todos os módulos</option>
+          </select>
+
+          <label class="field-label" for="kind-filter">Tipo de nó</label>
+          <select id="kind-filter" disabled>
+            <option value="">Todos os tipos</option>
+          </select>
+
+          <label class="field-label" for="visual-mode">Organização visual</label>
+          <select id="visual-mode" disabled>
+            <option value="semantic-2d">Grafo semântico 2D</option>
+            <option value="cortex-3d">Mapa ontológico 3D</option>
+            <option value="workforce">Rede operacional real</option>
+          </select>
+
+          <label class="field-label" for="layout-select">Layout do modo 2D</label>
+          <select id="layout-select" disabled>
+            <option value="force">Força semântica</option>
+            <option value="circular">Circular</option>
+            <option value="concentric">Concêntrica</option>
+            <option value="grid">Grade</option>
+          </select>
+
+          <label class="toggle-row">
+            <input id="show-labels" type="checkbox" checked disabled />
+            <span>Exibir rótulos</span>
+          </label>
+
+          <div class="button-grid">
+            <button id="fit-view" class="secondary-button" type="button" disabled>
+              Centralizar
+            </button>
+            <button id="export-graph" class="secondary-button" type="button" disabled>
+              Exportar JSON
+            </button>
+          </div>
+
+          <div class="legend" aria-label="Legenda">
+            <p class="field-label">Legenda</p>
+            <span><i class="dot class"></i>Classe</span>
+            <span><i class="dot property"></i>Propriedade</span>
+            <span><i class="dot action"></i>Ação e política</span>
+            <span><i class="dot memory"></i>Memória e cognição</span>
+            <span><i class="dot agent"></i>Agente registrado</span>
+            <span><i class="dot work"></i>Meta, trabalho e rotina</span>
+            <span><i class="dot external"></i>Padrão externo</span>
+          </div>
+        </aside>
+
+        <section class="graph-stage" aria-label="Visualização interativa do grafo">
+          <div id="graph" role="application" aria-label="Grafo semântico interativo"></div>
+          <div id="visual-state" class="visual-state">Aguardando conexão segura</div>
+          <div id="empty-state" class="empty-state">
+            <div class="brain-orbit" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <p class="eyebrow">PAINEL LOCAL</p>
+            <h2>Conecte para visualizar o Cortex</h2>
+            <p>
+              Carregue o arquivo <code>.env</code> ou informe a chave local. Ela fica somente na
+              memória desta página.
+            </p>
+          </div>
+          <div id="loading" class="loading" hidden>
+            <span></span>
+            <p>Construindo a rede semântica…</p>
+          </div>
+          <div class="stage-hint">
+            Arraste para mover/orbitar · roda do mouse para ampliar · clique para inspecionar
+          </div>
+        </section>
+
+        <aside id="detail-panel" class="detail-panel" aria-label="Detalhes e atividade persistida">
+          <div class="section-heading">
+            <p class="eyebrow">INSPEÇÃO</p>
+            <h2 id="detail-title">Selecione um nó</h2>
+          </div>
+          <div id="detail-content" class="detail-content">
+            <p>Os metadados, a definição e as relações diretas aparecerão aqui.</p>
+          </div>
+          <section class="activity-panel" aria-labelledby="activity-heading">
+            <div class="section-heading">
+              <p class="eyebrow">ATIVIDADE PERSISTIDA</p>
+              <h2 id="activity-heading">Eventos reais do runtime</h2>
+            </div>
+            <p class="activity-copy">
+              A consulta usa somente registros existentes no banco local. O painel não gera dados de
+              demonstração nem infere atividade.
+            </p>
+            <label class="field-label" for="activity-tenant">Tenant</label>
+            <input
+              id="activity-tenant"
+              class="scope-field"
+              type="text"
+              autocomplete="off"
+              placeholder="Identificador existente"
+              disabled
+            />
+            <label class="field-label" for="activity-brain">Cérebro</label>
+            <input
+              id="activity-brain"
+              class="scope-field"
+              type="text"
+              autocomplete="off"
+              placeholder="Identificador existente"
+              disabled
+            />
+            <button id="load-activity" class="secondary-button full-width" type="button" disabled>
+              Consultar registros
+            </button>
+            <p id="activity-status" class="activity-status" role="status">
+              Conecte e informe um escopo real.
+            </p>
+            <div id="activity-list" class="activity-list"></div>
+          </section>
+          <section class="activity-panel" aria-labelledby="workforce-heading">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">REDE DE AGENTES</p>
+              <h2 id="workforce-heading">Metas, agentes e trabalho</h2>
+            </div>
+            <p class="activity-copy">
+              Usa o mesmo tenant e cérebro informados acima. Só exibe registros persistidos e custos
+              medidos; a tela vazia permanece vazia.
+            </p>
+            <button id="load-workforce" class="secondary-button full-width" type="button" disabled>
+              Visualizar rede operacional
+            </button>
+            <p id="workforce-status" class="activity-status" role="status">
+              Nenhuma rede operacional consultada.
+            </p>
+          </section>
+          <section class="activity-panel" aria-labelledby="reasoning-heading">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">RDFS / OWL EXPLICÁVEL</p>
+              <h2 id="reasoning-heading">Inferências do Cortex</h2>
+            </div>
+            <p id="reasoning-status" class="activity-status" role="status">
+              Conecte para consultar o relatório real da ontologia carregada.
+            </p>
+            <div id="reasoning-summary" class="diagnostic-grid"></div>
+          </section>
+          <section class="activity-panel" aria-labelledby="integrity-heading">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">INTEGRIDADE</p>
+              <h2 id="integrity-heading">Trilha de auditoria</h2>
+            </div>
+            <p class="activity-copy">
+              Verifica a cadeia criptográfica do tenant e cérebro informados acima.
+            </p>
+            <button id="verify-audit" class="secondary-button full-width" type="button" disabled>
+              Verificar cadeia
+            </button>
+            <p id="audit-status" class="activity-status" role="status">
+              Nenhuma verificação executada.
+            </p>
+          </section>
+          <section class="activity-panel" aria-labelledby="failures-heading">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">DIAGNÓSTICO SANITIZADO</p>
+              <h2 id="failures-heading">Falhas correlacionadas</h2>
+            </div>
+            <button id="load-failures" class="secondary-button full-width" type="button" disabled>
+              Consultar falhas
+            </button>
+            <p id="failures-status" class="activity-status" role="status">
+              Nenhum diagnóstico consultado.
+            </p>
+            <div id="failures-list" class="activity-list"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="auth-dialog">
+      <form method="dialog" class="auth-card">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">ACESSO LOCAL</p>
+            <h2>Conectar ao Cortex</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Fechar" type="submit">×</button>
+        </div>
+        <p class="dialog-copy">
+          A chave nunca é gravada pelo painel. A opção mais segura é selecionar o arquivo
+          <code>.env</code> criado pelo instalador.
+        </p>
+        <label class="file-drop" for="environment-file">
+          <strong>Selecionar arquivo .env</strong>
+          <span>A leitura acontece apenas no navegador.</span>
+          <input id="environment-file" type="file" accept=".env,text/plain" />
+        </label>
+        <div class="divider"><span>ou</span></div>
+        <label class="field-label" for="api-token">Chave da API</label>
+        <input
+          id="api-token"
+          type="password"
+          autocomplete="off"
+          placeholder="Cole a chave com pelo menos 32 bytes"
+        />
+        <p id="auth-error" class="error-message" role="alert" hidden></p>
+        <button id="connect" class="primary-button full-width" value="default" type="button">
+          Abrir o grafo
+        </button>
+      </form>
+    </dialog>
+
+    <script type="module" src="/dashboard/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix tenant: <https://github.com/diogocaspary/cortex-universal/ontology/tenant#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/tenant>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+tenant:Workspace a owl:Class ; rdfs:subClassOf cubo:Context .
+tenant:Namespace a owl:Class ; rdfs:subClassOf cubo:Resource .
+tenant:RetentionProfile a owl:Class ; rdfs:subClassOf cubo:Policy .
+tenant:ResidencyRequirement a owl:Class ; rdfs:subClassOf cubo:Policy .
+tenant:EncryptionDomain a owl:Class ; rdfs:subClassOf cubo:Resource .
+
+tenant:hasWorkspace a owl:ObjectProperty ; rdfs:domain cubo:Tenant ; rdfs:range tenant:Workspace .
+tenant:hasRetentionProfile a owl:ObjectProperty ; rdfs:domain cubo:Tenant ; rdfs:range tenant:RetentionProfile .
+tenant:hasResidencyRequirement a owl:ObjectProperty ; rdfs:domain cubo:Tenant ; rdfs:range tenant:ResidencyRequirement .
+tenant:hasEncryptionDomain a owl:ObjectProperty ; rdfs:domain cubo:Tenant ; rdfs:range tenant:EncryptionDomain .
+tenant:namespace a owl:DatatypeProperty ; rdfs:domain cubo:Tenant ; rdfs:range xsd:anyURI .
+tenant:status a owl:DatatypeProperty ; rdfs:domain cubo:Tenant ; rdfs:range xsd:string .
+tenant:dataResidency a owl:DatatypeProperty ; rdfs:domain cubo:Tenant ; rdfs:range xsd:string .

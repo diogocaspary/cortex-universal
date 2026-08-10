@@ -1,0 +1,84 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix policy: <https://github.com/diogocaspary/cortex-universal/ontology/policy#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+agent:ActionDefinitionShape
+    a sh:NodeShape ;
+    sh:targetClass agent:ActionDefinition ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path agent:actionKey ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_.-]{2,127}$" ;
+    ] ;
+    sh:property [
+        sh:path agent:capabilityKey ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-z][a-z0-9_.-]{2,127}$" ;
+    ] ;
+    sh:property [
+        sh:path agent:riskLevel ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 5 ;
+    ] ;
+    sh:property [
+        sh:path agent:requiresPermission ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path agent:idempotencyRequired ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+    ] ;
+    sh:property [
+        sh:path agent:reversible ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+    ] ;
+    sh:property [
+        sh:path agent:verificationAction ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] .
+
+policy:PolicyRuleShape
+    a sh:NodeShape ;
+    sh:targetClass policy:PolicyRule ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path policy:policyEffect ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in ( "allow" "deny" "obligate" ) ;
+    ] ;
+    sh:property [
+        sh:path policy:policyVersion ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9]+\\.[0-9]+\\.[0-9]+$" ;
+    ] .

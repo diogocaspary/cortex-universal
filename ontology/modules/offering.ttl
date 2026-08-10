@@ -1,0 +1,26 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix offering: <https://github.com/diogocaspary/cortex-universal/ontology/offering#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/offering>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+offering:Product a owl:Class ; rdfs:subClassOf cubo:Resource .
+offering:Service a owl:Class ; rdfs:subClassOf cubo:Resource .
+offering:Offer a owl:Class ; rdfs:subClassOf cubo:Entity .
+offering:Plan a owl:Class ; rdfs:subClassOf offering:Offer .
+offering:Package a owl:Class ; rdfs:subClassOf offering:Offer .
+offering:Benefit a owl:Class ; rdfs:subClassOf cubo:Concept .
+offering:PriceSpecification a owl:Class ; rdfs:subClassOf cubo:Resource .
+offering:Entitlement a owl:Class ; rdfs:subClassOf cubo:Resource .
+
+offering:includesResource a owl:ObjectProperty ; rdfs:domain offering:Offer ; rdfs:range cubo:Resource .
+offering:includesBenefit a owl:ObjectProperty ; rdfs:domain offering:Offer ; rdfs:range offering:Benefit .
+offering:hasPriceSpecification a owl:ObjectProperty ; rdfs:domain offering:Offer ; rdfs:range offering:PriceSpecification .
+offering:grantsEntitlement a owl:ObjectProperty ; rdfs:domain offering:Offer ; rdfs:range offering:Entitlement .
+offering:amount a owl:DatatypeProperty ; rdfs:domain offering:PriceSpecification ; rdfs:range xsd:decimal .
+offering:currency a owl:DatatypeProperty ; rdfs:domain offering:PriceSpecification ; rdfs:range xsd:string .

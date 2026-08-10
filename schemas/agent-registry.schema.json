@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/agent-registry.schema.json",
+  "title": "Trusted governed agent registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "agents"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/agent" }
+    }
+  },
+  "$defs": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "role",
+        "department",
+        "reports_to",
+        "persona",
+        "capabilities",
+        "skill_ids",
+        "budget",
+        "heartbeat",
+        "allowed_classifications"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 128 },
+        "purpose": { "type": "string", "minLength": 8, "maxLength": 512 },
+        "role": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+        "department": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+        "reports_to": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9-]{1,63}$"
+        },
+        "persona": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["principles", "prohibited_behaviors", "success_criteria"],
+          "properties": {
+            "principles": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 25,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 3, "maxLength": 512 }
+            },
+            "prohibited_behaviors": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 25,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 3, "maxLength": 512 }
+            },
+            "success_criteria": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 25,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 3, "maxLength": 512 }
+            }
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ontology.read",
+              "ontology.validate",
+              "memory.ingest",
+              "memory.retrieve",
+              "knowledge.query",
+              "semantic.validation",
+              "cognition.evaluate",
+              "policy.evaluate",
+              "handoff.propose",
+              "guard.evaluate",
+              "goal.manage",
+              "work.plan",
+              "work.execute",
+              "work.review",
+              "routine.execute",
+              "heartbeat.report",
+              "cost.report",
+              "agent.evaluate"
+            ]
+          }
+        },
+        "skill_ids": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_total_tokens", "max_cost_microusd", "max_run_duration_ms"],
+          "properties": {
+            "max_total_tokens": { "type": "integer", "minimum": 1, "maximum": 1000000000 },
+            "max_cost_microusd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            },
+            "max_run_duration_ms": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 86400000
+            }
+          }
+        },
+        "heartbeat": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "minimum_interval_seconds"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "minimum_interval_seconds": {
+              "type": "integer",
+              "minimum": 60,
+              "maximum": 86400
+            }
+          }
+        },
+        "allowed_classifications": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["public", "internal", "confidential", "restricted"] }
+        }
+      }
+    }
+  }
+}

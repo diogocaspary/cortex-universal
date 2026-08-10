@@ -1,0 +1,362 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/core>
+    a owl:Ontology ;
+    owl:versionIRI <https://github.com/diogocaspary/cortex-universal/ontology/core/0.3.0> ;
+    owl:versionInfo "0.3.0" ;
+    dcterms:title "Cortex Universal Business Ontology — Core"@en ;
+    dcterms:description "Stable universal primitives shared by all Cortex Universal modules."@en ;
+    dcterms:creator "Diogo Caspary" .
+
+#################################################################
+# Universal classes
+#################################################################
+
+cubo:Entity
+    a owl:Class ;
+    rdfs:label "Entity"@en ;
+    skos:definition "Anything with a stable identity in a modeled context."@en .
+
+cubo:Agent
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity, prov:Agent ;
+    rdfs:label "Agent"@en ;
+    skos:definition "A person, organization, system, or AI capable of action."@en .
+
+cubo:Resource
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity, prov:Entity ;
+    rdfs:label "Resource"@en .
+
+cubo:Concept
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity, skos:Concept ;
+    rdfs:label "Concept"@en .
+
+cubo:Role
+    a owl:Class ;
+    rdfs:subClassOf cubo:Concept ;
+    rdfs:label "Role"@en ;
+    skos:definition "A contextual function held by an agent."@en .
+
+cubo:Relationship
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Relationship"@en .
+
+cubo:State
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "State"@en ;
+    skos:definition "A condition of an entity that is valid in a context or interval."@en .
+
+cubo:Event
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Event"@en ;
+    skos:definition "An immutable observation that something occurred."@en .
+
+cubo:Command
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Command"@en ;
+    skos:definition "A request to attempt a state-changing action; not proof that it occurred."@en .
+
+cubo:Activity
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity, prov:Activity ;
+    rdfs:label "Activity"@en .
+
+cubo:Claim
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Claim"@en ;
+    skos:definition "A contextual assertion whose provenance and verification can be tracked."@en .
+
+cubo:Evidence
+    a owl:Class ;
+    rdfs:subClassOf cubo:Resource ;
+    rdfs:label "Evidence"@en .
+
+cubo:Source
+    a owl:Class ;
+    rdfs:subClassOf cubo:Resource ;
+    rdfs:label "Source"@en .
+
+cubo:Goal
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Goal"@en .
+
+cubo:Action
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Action"@en ;
+    skos:definition "A proposed or performed attempt to change state."@en .
+
+cubo:Policy
+    a owl:Class ;
+    rdfs:subClassOf cubo:Resource ;
+    rdfs:label "Policy"@en .
+
+cubo:Risk
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Risk"@en .
+
+cubo:Metric
+    a owl:Class ;
+    rdfs:subClassOf cubo:Concept ;
+    rdfs:label "Metric"@en .
+
+cubo:Place
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Place"@en .
+
+cubo:TimeInterval
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Time interval"@en .
+
+cubo:Context
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Context"@en .
+
+cubo:Tenant
+    a owl:Class ;
+    rdfs:subClassOf cubo:Entity ;
+    rdfs:label "Tenant"@en ;
+    skos:definition "An isolated administrative and data-security boundary."@en .
+
+cubo:VerificationStatus
+    a owl:Class ;
+    rdfs:subClassOf cubo:Concept ;
+    rdfs:label "Verification status"@en .
+
+cubo:DataClassification
+    a owl:Class ;
+    rdfs:subClassOf cubo:Concept ;
+    rdfs:label "Data classification"@en .
+
+#################################################################
+# Object properties
+#################################################################
+
+cubo:hasTenant
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain cubo:Entity ;
+    rdfs:range cubo:Tenant ;
+    rdfs:label "has tenant"@en .
+
+cubo:hasContext
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Entity ;
+    rdfs:range cubo:Context ;
+    rdfs:label "has context"@en .
+
+cubo:hasState
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Entity ;
+    rdfs:range cubo:State ;
+    rdfs:label "has state"@en .
+
+cubo:hasRole
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Agent ;
+    rdfs:range cubo:Role ;
+    rdfs:label "has role"@en .
+
+cubo:participatesIn
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Agent ;
+    rdfs:range cubo:Activity ;
+    rdfs:label "participates in"@en .
+
+cubo:produces
+    a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:generated ;
+    rdfs:domain cubo:Activity ;
+    rdfs:range cubo:Resource ;
+    rdfs:label "produces"@en .
+
+cubo:affects
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Event ;
+    rdfs:range cubo:Entity ;
+    rdfs:label "affects"@en .
+
+cubo:about
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Claim ;
+    rdfs:range cubo:Entity ;
+    rdfs:label "about"@en .
+
+cubo:supportedBy
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Claim ;
+    rdfs:range cubo:Evidence ;
+    rdfs:label "supported by"@en .
+
+cubo:derivedFrom
+    a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:range cubo:Source ;
+    rdfs:label "derived from"@en .
+
+cubo:pursues
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Agent ;
+    rdfs:range cubo:Goal ;
+    rdfs:label "pursues"@en .
+
+cubo:intendsToAchieve
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Action ;
+    rdfs:range cubo:Goal ;
+    rdfs:label "intends to achieve"@en .
+
+cubo:requiresPolicy
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Action ;
+    rdfs:range cubo:Policy ;
+    rdfs:label "requires policy"@en .
+
+cubo:appliesTo
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Policy ;
+    rdfs:range cubo:Entity ;
+    rdfs:label "applies to"@en .
+
+cubo:measures
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Metric ;
+    rdfs:range cubo:Entity ;
+    rdfs:label "measures"@en .
+
+cubo:occursIn
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Event ;
+    rdfs:range cubo:Place ;
+    rdfs:label "occurs in"@en .
+
+cubo:causedBy
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Event ;
+    rdfs:range cubo:Agent ;
+    rdfs:label "caused by"@en .
+
+cubo:expectedEffect
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Action ;
+    rdfs:range cubo:State ;
+    rdfs:label "expected effect"@en .
+
+cubo:observedOutcome
+    a owl:ObjectProperty ;
+    rdfs:domain cubo:Action ;
+    rdfs:range cubo:Event ;
+    rdfs:label "observed outcome"@en .
+
+cubo:hasVerificationStatus
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain cubo:Claim ;
+    rdfs:range cubo:VerificationStatus ;
+    rdfs:label "has verification status"@en .
+
+cubo:hasClassification
+    a owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain cubo:Entity ;
+    rdfs:range cubo:DataClassification ;
+    rdfs:label "has classification"@en .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+cubo:identifier
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "identifier"@en .
+
+cubo:validFrom
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "valid from"@en .
+
+cubo:validUntil
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "valid until"@en .
+
+cubo:observedAt
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "observed at"@en .
+
+cubo:occurredAt
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "occurred at"@en .
+
+cubo:confidence
+    a owl:DatatypeProperty ;
+    rdfs:domain cubo:Claim ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "confidence"@en .
+
+cubo:version
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "version"@en .
+
+cubo:riskLevel
+    a owl:DatatypeProperty ;
+    rdfs:domain cubo:Action ;
+    rdfs:range xsd:integer ;
+    rdfs:label "risk level"@en .
+
+cubo:idempotencyKey
+    a owl:DatatypeProperty ;
+    rdfs:domain cubo:Command ;
+    rdfs:range xsd:string ;
+    rdfs:label "idempotency key"@en .
+
+cubo:payloadHash
+    a owl:DatatypeProperty ;
+    rdfs:domain cubo:Event ;
+    rdfs:range xsd:string ;
+    rdfs:label "payload hash"@en .
+
+cubo:correlationId
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "correlation identifier"@en .
+
+cubo:causationId
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "causation identifier"@en .
+
+#################################################################
+# Controlled concepts
+#################################################################
+
+cubo:Proposed a cubo:VerificationStatus ; skos:prefLabel "Proposed"@en .
+cubo:Verified a cubo:VerificationStatus ; skos:prefLabel "Verified"@en .
+cubo:Disputed a cubo:VerificationStatus ; skos:prefLabel "Disputed"@en .
+cubo:Expired a cubo:VerificationStatus ; skos:prefLabel "Expired"@en .
+cubo:Rejected a cubo:VerificationStatus ; skos:prefLabel "Rejected"@en .
+
+cubo:Public a cubo:DataClassification ; skos:prefLabel "Public"@en .
+cubo:Internal a cubo:DataClassification ; skos:prefLabel "Internal"@en .
+cubo:Confidential a cubo:DataClassification ; skos:prefLabel "Confidential"@en .
+cubo:Restricted a cubo:DataClassification ; skos:prefLabel "Restricted"@en .

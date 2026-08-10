@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/policy-request.schema.json",
+  "title": "Policy decision request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "subject",
+    "resource",
+    "action_key",
+    "verified_preconditions",
+    "approval",
+    "context"
+  ],
+  "properties": {
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tenant_id", "roles", "permissions"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+        },
+        "permissions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tenant_id", "classification"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tenant_id": {
+          "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 128 }, { "type": "null" }]
+        },
+        "classification": { "enum": ["public", "internal", "confidential", "restricted"] }
+      }
+    },
+    "action_key": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "verified_preconditions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["not-required", "pending", "approved", "denied"] },
+        "reference": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "approved_by": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "approved" } }, "required": ["status"] },
+          "then": {
+            "required": ["reference", "approved_by", "approved_at", "expires_at"],
+            "properties": {
+              "reference": { "type": "string", "minLength": 1 },
+              "approved_by": { "type": "array", "minItems": 1 },
+              "approved_at": { "type": "string", "format": "date-time" },
+              "expires_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requested_at", "request_id", "purpose"],
+      "properties": {
+        "requested_at": { "type": "string", "format": "date-time" },
+        "request_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+        "purpose": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "ip_address": { "type": "string", "format": "ip" },
+        "environment": { "enum": ["development", "test", "staging", "production"] }
+      }
+    }
+  }
+}

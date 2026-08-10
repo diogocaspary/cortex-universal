@@ -1,0 +1,184 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix tenant: <https://github.com/diogocaspary/cortex-universal/ontology/tenant#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cubo:TenantShape
+    a sh:NodeShape ;
+    sh:targetClass cubo:Tenant ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+    ] ;
+    sh:property [
+        sh:path tenant:namespace ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:anyURI ;
+    ] ;
+    sh:property [
+        sh:path tenant:status ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in ( "active" "suspended" "closing" "closed" ) ;
+    ] .
+
+cubo:SourceShape
+    a sh:NodeShape ;
+    sh:targetClass cubo:Source ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:DataClassification ;
+    ] .
+
+cubo:ClaimShape
+    a sh:NodeShape ;
+    sh:targetClass cubo:Claim ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path cubo:about ;
+        sh:minCount 1 ;
+        sh:class cubo:Entity ;
+    ] ;
+    sh:property [
+        sh:path cubo:derivedFrom ;
+        sh:minCount 1 ;
+        sh:class cubo:Source ;
+        sh:message "Every operational claim requires provenance."@en ;
+    ] ;
+    sh:property [
+        sh:path cubo:observedAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+    ] ;
+    sh:property [
+        sh:path cubo:validFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:lessThan cubo:validUntil ;
+    ] ;
+    sh:property [
+        sh:path cubo:validUntil ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasVerificationStatus ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( cubo:Proposed cubo:Verified cubo:Disputed cubo:Expired cubo:Rejected ) ;
+    ] ;
+    sh:property [
+        sh:path cubo:confidence ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0.0 ;
+        sh:maxInclusive 1.0 ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:DataClassification ;
+    ] .
+
+cubo:EventShape
+    a sh:NodeShape ;
+    sh:targetClass cubo:Event ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path cubo:occurredAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:lessThanOrEquals cubo:observedAt ;
+    ] ;
+    sh:property [
+        sh:path cubo:observedAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+    ] ;
+    sh:property [
+        sh:path cubo:derivedFrom ;
+        sh:minCount 1 ;
+        sh:class cubo:Source ;
+    ] ;
+    sh:property [
+        sh:path cubo:payloadHash ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^sha256:[a-fA-F0-9]{64}$" ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:DataClassification ;
+    ] .
+
+cubo:CommandShape
+    a sh:NodeShape ;
+    sh:targetClass cubo:Command ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path cubo:idempotencyKey ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 16 ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:DataClassification ;
+    ] .

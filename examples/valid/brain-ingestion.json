@@ -1,0 +1,25 @@
+{
+  "envelope": {
+    "id": "evidence:customer-42-status",
+    "tenant_id": "tenant-example",
+    "brain_id": "customer-operations",
+    "source_id": "conformance-fixture",
+    "captured_at": "2026-08-09T12:00:00Z",
+    "classification": "internal",
+    "content_hash": "sha256:9c8491609e0ec8c005ea110522506f133c6769cf5c0ffa24e1d1a16152ade531",
+    "media_type": "text/plain",
+    "content_reference": "urn:cortex:evidence:crm-event-9001",
+    "idempotency_key": "crm-event-9001-v1",
+    "provenance": {
+      "actor_id": "test:conformance-suite",
+      "system": "conformance-suite",
+      "correlation_id": "correlation:9001"
+    }
+  },
+  "projection": {
+    "text": "O cliente 42 está ativo e possui atendimento prioritário.",
+    "embedding": [0.1, 0.2, 0.3],
+    "entities": [{ "id": "customer:42", "label": "Cliente 42", "module": "customer" }],
+    "citations": ["urn:cortex:evidence:crm-event-9001"]
+  }
+}

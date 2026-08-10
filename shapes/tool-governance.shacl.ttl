@@ -1,0 +1,37 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix tool: <https://github.com/diogocaspary/cortex-universal/ontology/tool-governance#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+tool:ToolProposalShape a sh:NodeShape ;
+    sh:targetClass tool:ToolProposal ;
+    sh:closed true ;
+    sh:ignoredProperties ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path tool:proposesAction ; sh:minCount 1 ; sh:maxCount 1 ; sh:class agent:ActionDefinition ] ;
+    sh:property [ sh:path tool:usesLoopBudget ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tool:LoopBudget ] ;
+    sh:property [ sh:path tool:argumentHash ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:[a-f0-9]{64}$" ] .
+
+tool:GuardDecisionShape a sh:NodeShape ;
+    sh:targetClass tool:GuardDecision ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path tool:evaluatesProposal ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tool:ToolProposal ] ;
+    sh:property [ sh:path tool:decisionEffect ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "allow" "deny" ) ] ;
+    sh:property [ sh:path cubo:occurredAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+tool:EffectObservationShape a sh:NodeShape ;
+    sh:targetClass tool:EffectObservation ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:derivedFrom ; sh:minCount 1 ; sh:class cubo:Source ] ;
+    sh:property [ sh:path tool:observesExecution ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tool:EffectExecution ] ;
+    sh:property [ sh:path tool:observationHash ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:pattern "^sha256:[a-f0-9]{64}$" ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+tool:LoopBudgetShape a sh:NodeShape ;
+    sh:targetClass tool:LoopBudget ;
+    sh:property [ sh:path tool:maximumSteps ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:maxInclusive 100 ] ;
+    sh:property [ sh:path tool:maximumRepeatedActionCalls ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ; sh:maxInclusive 10 ] .
+

@@ -1,0 +1,30 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agreement: <https://github.com/diogocaspary/cortex-universal/ontology/agreement#> .
+@prefix data: <https://github.com/diogocaspary/cortex-universal/ontology/data-governance#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/data-governance>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/agreement> ;
+    owl:versionInfo "0.1.0" .
+
+data:DataAsset a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Data asset"@en .
+data:Dataset a owl:Class ; rdfs:subClassOf data:DataAsset ; rdfs:label "Dataset"@en .
+data:DataProduct a owl:Class ; rdfs:subClassOf data:DataAsset ; rdfs:label "Data product"@en .
+data:DataOwner a owl:Class ; rdfs:subClassOf cubo:Role ; rdfs:label "Data owner"@en .
+data:DataSteward a owl:Class ; rdfs:subClassOf cubo:Role ; rdfs:label "Data steward"@en .
+data:DataLineage a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Data lineage"@en .
+data:DataQualityRule a owl:Class ; rdfs:subClassOf cubo:Policy ; rdfs:label "Data quality rule"@en .
+data:DataContract a owl:Class ; rdfs:subClassOf agreement:Agreement ; rdfs:label "Data contract"@en .
+data:Schema a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Schema"@en .
+
+data:ownedBy a owl:ObjectProperty ; rdfs:domain data:DataAsset ; rdfs:range cubo:Agent ; rdfs:label "owned by"@en .
+data:stewardedBy a owl:ObjectProperty ; rdfs:domain data:DataAsset ; rdfs:range cubo:Agent ; rdfs:label "stewarded by"@en .
+data:lineageSource a owl:ObjectProperty ; rdfs:domain data:DataLineage ; rdfs:range data:DataAsset ; rdfs:label "lineage source"@en .
+data:lineageTarget a owl:ObjectProperty ; rdfs:domain data:DataLineage ; rdfs:range data:DataAsset ; rdfs:label "lineage target"@en .
+data:governedBy a owl:ObjectProperty ; rdfs:domain data:DataAsset ; rdfs:range cubo:Policy ; rdfs:label "governed by"@en .
+data:hasSchema a owl:ObjectProperty ; rdfs:domain data:DataAsset ; rdfs:range data:Schema ; rdfs:label "has schema"@en .
+data:schemaReference a owl:DatatypeProperty ; rdfs:domain data:Schema ; rdfs:range xsd:string ; rdfs:label "schema reference"@en .

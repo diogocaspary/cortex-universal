@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/tool-proposal.schema.json",
+  "title": "Ontology-guarded tool proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposal_id",
+    "tenant_id",
+    "brain_id",
+    "session_id",
+    "agent_id",
+    "action_key",
+    "resource",
+    "argument_reference",
+    "argument_hash",
+    "verified_preconditions",
+    "approval",
+    "purpose",
+    "proposed_at",
+    "expires_at"
+  ],
+  "properties": {
+    "proposal_id": { "type": "string", "pattern": "^proposal:[A-Za-z0-9_.:-]{8,119}$" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "session_id": { "type": "string", "pattern": "^session:[A-Za-z0-9-]{8,120}$" },
+    "agent_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "action_key": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tenant_id", "classification"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "classification": { "enum": ["public", "internal", "confidential", "restricted"] }
+      }
+    },
+    "argument_reference": { "type": "string", "minLength": 3, "maxLength": 2048 },
+    "argument_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 256 },
+    "verified_preconditions": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["not-required", "pending", "approved", "denied"] },
+        "reference": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "approved_by": {
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "approved" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "reference": true,
+              "approved_by": true,
+              "approved_at": true,
+              "expires_at": true
+            },
+            "required": ["reference", "approved_by", "approved_at", "expires_at"]
+          }
+        }
+      ]
+    },
+    "purpose": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "proposed_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" }
+  }
+}

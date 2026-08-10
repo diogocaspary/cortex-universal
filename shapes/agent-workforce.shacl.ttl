@@ -1,0 +1,51 @@
+@prefix awf: <https://github.com/diogocaspary/cortex-universal/ontology/agent-workforce#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+awf:AgenticGoalShape a sh:NodeShape ;
+    sh:targetClass awf:AgenticGoal ;
+    sh:property [ sh:path awf:hasSuccessCriterion ; sh:minCount 1 ; sh:class awf:SuccessCriterion ] ;
+    sh:property [ sh:path awf:ownedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class agent:AIAgent ] .
+
+awf:WorkItemShape a sh:NodeShape ;
+    sh:targetClass awf:WorkItem ;
+    sh:property [ sh:path awf:servesGoal ; sh:minCount 1 ; sh:maxCount 1 ; sh:class awf:AgenticGoal ] ;
+    sh:property [ sh:path awf:assignedTo ; sh:minCount 1 ; sh:maxCount 1 ; sh:class agent:AIAgent ] ;
+    sh:property [ sh:path awf:priority ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ; sh:maxInclusive 5 ] ;
+    sh:property [ sh:path awf:status ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "ready" "in_progress" "blocked" "review" "approved" "completed" "failed" "cancelled" ) ] ;
+    sh:property [ sh:path awf:hasAcceptanceCriterion ; sh:minCount 1 ; sh:class awf:SuccessCriterion ] ;
+    sh:property [ sh:path awf:governedByBudget ; sh:minCount 1 ; sh:maxCount 1 ; sh:class awf:BudgetPolicy ] .
+
+awf:BudgetPolicyShape a sh:NodeShape ;
+    sh:targetClass awf:BudgetPolicy ;
+    sh:property [ sh:path awf:maxTotalTokens ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ] ;
+    sh:property [ sh:path awf:maxCostMicroUsd ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path awf:maxDurationMs ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:positiveInteger ] .
+
+awf:RoutineShape a sh:NodeShape ;
+    sh:targetClass awf:Routine ;
+    sh:property [ sh:path awf:intervalSeconds ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 60 ] ;
+    sh:property [ sh:path awf:nextRunAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .
+
+awf:CostEventShape a sh:NodeShape ;
+    sh:targetClass awf:CostEvent ;
+    sh:property [ sh:path awf:costForAgent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class agent:AIAgent ] ;
+    sh:property [ sh:path awf:costForWork ; sh:minCount 1 ; sh:maxCount 1 ; sh:class awf:WorkItem ] ;
+    sh:property [ sh:path awf:inputTokens ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path awf:outputTokens ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path awf:costMicroUsd ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:nonNegativeInteger ] ;
+    sh:property [ sh:path awf:measurementStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "provider-reported" "subscription-allocated" ) ] ;
+    sh:property [ sh:path awf:evidenceReference ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:anyURI ] .
+
+awf:HeartbeatShape a sh:NodeShape ;
+    sh:targetClass awf:Heartbeat ;
+    sh:property [ sh:path awf:observesAgent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class agent:AIAgent ] ;
+    sh:property [ sh:path awf:status ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:in ( "idle" "working" "blocked" "degraded" "offline" ) ] ;
+    sh:property [ sh:path awf:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path awf:evidenceReference ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:anyURI ] .
+
+awf:SkillManifestShape a sh:NodeShape ;
+    sh:targetClass awf:SkillManifest ;
+    sh:property [ sh:path awf:contentHash ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^sha256:[a-f0-9]{64}$" ] ;
+    sh:property [ sh:path awf:sourceRevision ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[a-f0-9]{40,64}$" ] .

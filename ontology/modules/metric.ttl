@@ -1,0 +1,22 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix metric: <https://github.com/diogocaspary/cortex-universal/ontology/metric#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/metric>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+metric:Measurement a owl:Class ; rdfs:subClassOf cubo:Event .
+metric:Indicator a owl:Class ; rdfs:subClassOf cubo:Metric .
+metric:Target a owl:Class ; rdfs:subClassOf cubo:Goal .
+metric:Unit a owl:Class ; rdfs:subClassOf cubo:Concept .
+metric:ServiceLevelMetric a owl:Class ; rdfs:subClassOf metric:Indicator .
+
+metric:forMetric a owl:ObjectProperty ; rdfs:domain metric:Measurement ; rdfs:range cubo:Metric .
+metric:hasUnit a owl:ObjectProperty ; rdfs:range metric:Unit .
+metric:targetFor a owl:ObjectProperty ; rdfs:domain metric:Target ; rdfs:range cubo:Metric .
+metric:numericValue a owl:DatatypeProperty ; rdfs:domain metric:Measurement ; rdfs:range xsd:decimal .
+metric:textValue a owl:DatatypeProperty ; rdfs:domain metric:Measurement ; rdfs:range xsd:string .

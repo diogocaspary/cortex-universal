@@ -1,0 +1,24 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix risk: <https://github.com/diogocaspary/cortex-universal/ontology/risk#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/risk>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+risk:RiskAssessment a owl:Class ; rdfs:subClassOf cubo:Activity .
+risk:Impact a owl:Class ; rdfs:subClassOf cubo:Concept .
+risk:Incident a owl:Class ; rdfs:subClassOf cubo:Event .
+risk:Control a owl:Class ; rdfs:subClassOf cubo:Policy .
+risk:Mitigation a owl:Class ; rdfs:subClassOf cubo:Activity .
+risk:Threat a owl:Class ; rdfs:subClassOf cubo:Risk .
+
+risk:assesses a owl:ObjectProperty ; rdfs:domain risk:RiskAssessment ; rdfs:range cubo:Risk .
+risk:hasImpact a owl:ObjectProperty ; rdfs:domain cubo:Risk ; rdfs:range risk:Impact .
+risk:mitigatedBy a owl:ObjectProperty ; rdfs:domain cubo:Risk ; rdfs:range risk:Control .
+risk:realizedAs a owl:ObjectProperty ; rdfs:domain cubo:Risk ; rdfs:range risk:Incident .
+risk:likelihood a owl:DatatypeProperty ; rdfs:domain cubo:Risk ; rdfs:range xsd:decimal .
+risk:impactLevel a owl:DatatypeProperty ; rdfs:domain cubo:Risk ; rdfs:range xsd:integer .

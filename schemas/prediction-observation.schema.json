@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/prediction-observation.schema.json",
+  "title": "Prediction and observation evaluation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "tenant_id", "brain_id", "deliberation_threshold", "observations"],
+  "properties": {
+    "request_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "deliberation_threshold": { "$ref": "#/$defs/unit" },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": { "$ref": "#/$defs/observation" }
+    }
+  },
+  "$defs": {
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prediction_id",
+        "expected",
+        "observed",
+        "minimum",
+        "maximum",
+        "importance",
+        "evidence_ids",
+        "predicted_at",
+        "observed_at"
+      ],
+      "properties": {
+        "prediction_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "expected": { "type": "number" },
+        "observed": { "type": "number" },
+        "minimum": { "type": "number" },
+        "maximum": { "type": "number" },
+        "importance": { "$ref": "#/$defs/unit" },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "predicted_at": { "type": "string", "format": "date-time" },
+        "observed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

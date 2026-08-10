@@ -1,0 +1,25 @@
+{
+  "request_id": "request:0001",
+  "trace_id": "trace:000001",
+  "hits": [
+    {
+      "id": "claim:customer-42-status",
+      "score": 0.91,
+      "brain_id": "customer-operations",
+      "classification": "internal",
+      "source_id": "crm-primary",
+      "content_reference": "urn:cortex:claim:customer-42-status",
+      "excerpt": "O cliente 42 está ativo e possui atendimento prioritário.",
+      "citations": ["urn:cortex:evidence:crm-event-9001"],
+      "valid_from": "2026-08-09T11:55:00Z",
+      "valid_until": null,
+      "score_components": {
+        "keyword": 0.8,
+        "vector": 0.89,
+        "graph": 0.95,
+        "reranker": 0.91
+      }
+    }
+  ],
+  "gaps": []
+}

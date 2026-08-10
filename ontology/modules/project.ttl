@@ -1,0 +1,26 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix project: <https://github.com/diogocaspary/cortex-universal/ontology/project#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/project>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+project:Portfolio a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Portfolio"@en .
+project:Project a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Project"@en .
+project:Milestone a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Milestone"@en .
+project:Deliverable a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Deliverable"@en .
+project:WorkPackage a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Work package"@en .
+project:ProjectRisk a owl:Class ; rdfs:subClassOf cubo:Risk ; rdfs:label "Project risk"@en .
+project:Stakeholder a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Stakeholder"@en .
+
+project:hasProject a owl:ObjectProperty ; rdfs:domain project:Portfolio ; rdfs:range project:Project ; rdfs:label "has project"@en .
+project:hasMilestone a owl:ObjectProperty ; rdfs:domain project:Project ; rdfs:range project:Milestone ; rdfs:label "has milestone"@en .
+project:hasWorkPackage a owl:ObjectProperty ; rdfs:domain project:Project ; rdfs:range project:WorkPackage ; rdfs:label "has work package"@en .
+project:delivers a owl:ObjectProperty ; rdfs:domain project:Project ; rdfs:range project:Deliverable ; rdfs:label "delivers"@en .
+project:sponsor a owl:ObjectProperty ; rdfs:domain project:Project ; rdfs:range cubo:Agent ; rdfs:label "sponsor"@en .
+project:stakeholderAgent a owl:ObjectProperty ; rdfs:domain project:Stakeholder ; rdfs:range cubo:Agent ; rdfs:label "stakeholder agent"@en .
+project:percentComplete a owl:DatatypeProperty ; rdfs:domain project:Project ; rdfs:range xsd:decimal ; rdfs:label "percent complete"@en .

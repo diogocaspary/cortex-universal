@@ -1,0 +1,54 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix integration: <https://github.com/diogocaspary/cortex-universal/ontology/integration#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+integration:CredentialReferenceShape
+    a sh:NodeShape ;
+    sh:targetClass integration:CredentialReference ;
+    sh:closed true ;
+    sh:ignoredProperties ( rdf:type rdfs:label ) ;
+    sh:property [
+        sh:path cubo:identifier ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasTenant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class cubo:Tenant ;
+    ] ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( cubo:Confidential cubo:Restricted ) ;
+    ] ;
+    sh:property [
+        sh:path integration:provider ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path integration:secretReference ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^(vault|aws-sm|gcp-sm|azure-kv|env)://" ;
+        sh:message "Store only a secrets-manager reference, never the secret value."@en ;
+    ] .
+
+cubo:ClassifiedEntityShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf cubo:hasClassification ;
+    sh:property [
+        sh:path cubo:hasClassification ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:in ( cubo:Public cubo:Internal cubo:Confidential cubo:Restricted ) ;
+    ] .

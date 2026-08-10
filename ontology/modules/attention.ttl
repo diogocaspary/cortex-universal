@@ -1,0 +1,36 @@
+@prefix attention: <https://github.com/diogocaspary/cortex-universal/ontology/attention#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix memory: <https://github.com/diogocaspary/cortex-universal/ontology/memory#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/attention>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/memory> ;
+    owl:versionInfo "0.3.0" .
+
+attention:AttentionCandidate a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Attention candidate"@en .
+attention:AttentionSelection a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Attention selection"@en .
+attention:WorkingSet a owl:Class ; rdfs:subClassOf memory:WorkingMemory ; rdfs:label "Bounded working set"@en .
+attention:GlobalWorkspace a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Global information workspace"@en .
+attention:WorkspaceBroadcast a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Workspace broadcast"@en .
+attention:SalienceSignal a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Salience signal"@en .
+
+attention:candidateContent a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range cubo:Entity ; rdfs:label "candidate content"@en .
+attention:selectedCandidate a owl:ObjectProperty ; rdfs:domain attention:AttentionSelection ; rdfs:range attention:AttentionCandidate ; rdfs:label "selected candidate"@en .
+attention:deferredCandidate a owl:ObjectProperty ; rdfs:domain attention:AttentionSelection ; rdfs:range attention:AttentionCandidate ; rdfs:label "deferred candidate"@en .
+attention:fillsWorkingSet a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain attention:AttentionSelection ; rdfs:range attention:WorkingSet ; rdfs:label "fills working set"@en .
+attention:usesWorkspace a owl:ObjectProperty ; rdfs:domain attention:WorkspaceBroadcast ; rdfs:range attention:GlobalWorkspace ; rdfs:label "uses workspace"@en .
+attention:broadcastsContent a owl:ObjectProperty ; rdfs:domain attention:WorkspaceBroadcast ; rdfs:range cubo:Entity ; rdfs:label "broadcasts content"@en .
+attention:servesGoal a owl:ObjectProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range cubo:Goal ; rdfs:label "serves goal"@en .
+
+attention:capacity a owl:DatatypeProperty ; rdfs:domain attention:WorkingSet ; rdfs:range xsd:positiveInteger ; rdfs:label "configurable capacity"@en .
+attention:attentionScore a owl:DatatypeProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range xsd:decimal ; rdfs:label "attention score"@en .
+attention:relevanceScore a owl:DatatypeProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range xsd:decimal ; rdfs:label "goal relevance score"@en .
+attention:noveltyScore a owl:DatatypeProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range xsd:decimal ; rdfs:label "novelty score"@en .
+attention:urgencyScore a owl:DatatypeProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range xsd:decimal ; rdfs:label "urgency score"@en .
+attention:uncertaintyScore a owl:DatatypeProperty ; rdfs:domain attention:AttentionCandidate ; rdfs:range xsd:decimal ; rdfs:label "uncertainty score"@en .
+

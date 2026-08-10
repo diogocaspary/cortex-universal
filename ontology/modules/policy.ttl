@@ -1,0 +1,29 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix policy: <https://github.com/diogocaspary/cortex-universal/ontology/policy#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/policy>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+policy:Permission a owl:Class ; rdfs:subClassOf cubo:Policy, odrl:Permission .
+policy:Prohibition a owl:Class ; rdfs:subClassOf cubo:Policy, odrl:Prohibition .
+policy:Obligation a owl:Class ; rdfs:subClassOf cubo:Policy, odrl:Duty .
+policy:PolicyRule a owl:Class ; rdfs:subClassOf cubo:Policy .
+policy:ProcessingPurpose a owl:Class ; rdfs:subClassOf cubo:Concept .
+policy:LegalBasis a owl:Class ; rdfs:subClassOf cubo:Concept .
+policy:Consent a owl:Class ; rdfs:subClassOf cubo:Resource .
+policy:RetentionPolicy a owl:Class ; rdfs:subClassOf cubo:Policy .
+
+policy:permitsAction a owl:ObjectProperty ; rdfs:domain policy:Permission ; rdfs:range agent:ActionDefinition .
+policy:prohibitsAction a owl:ObjectProperty ; rdfs:domain policy:Prohibition ; rdfs:range agent:ActionDefinition .
+policy:hasPurpose a owl:ObjectProperty ; rdfs:range policy:ProcessingPurpose .
+policy:hasLegalBasis a owl:ObjectProperty ; rdfs:range policy:LegalBasis .
+policy:grantedBy a owl:ObjectProperty ; rdfs:domain policy:Consent ; rdfs:range cubo:Agent .
+policy:policyEffect a owl:DatatypeProperty ; rdfs:domain policy:PolicyRule ; rdfs:range xsd:string .
+policy:policyVersion a owl:DatatypeProperty ; rdfs:domain cubo:Policy ; rdfs:range xsd:string .

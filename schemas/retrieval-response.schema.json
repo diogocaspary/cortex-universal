@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/retrieval-response.schema.json",
+  "title": "Evidence-bearing hybrid retrieval response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "trace_id", "hits", "gaps"],
+  "properties": {
+    "request_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+    "trace_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+    "hits": {
+      "type": "array",
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/hit" }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/gap" }
+    }
+  },
+  "$defs": {
+    "hit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "score",
+        "brain_id",
+        "classification",
+        "source_id",
+        "content_reference",
+        "excerpt",
+        "citations",
+        "valid_from",
+        "valid_until",
+        "score_components"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "score": { "type": "number", "minimum": 0 },
+        "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "source_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "content_reference": { "type": "string", "minLength": 3, "maxLength": 2048 },
+        "excerpt": { "type": "string", "maxLength": 400 },
+        "citations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        },
+        "valid_from": { "type": "string", "format": "date-time" },
+        "valid_until": { "type": ["string", "null"], "format": "date-time" },
+        "score_components": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keyword": { "type": "number", "minimum": 0 },
+            "vector": { "type": "number", "minimum": 0 },
+            "graph": { "type": "number", "minimum": 0 },
+            "reranker": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "related_ids"],
+      "properties": {
+        "code": {
+          "enum": ["no_results", "uncited_result", "stale_result", "contradictory_results"]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "related_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        }
+      }
+    }
+  }
+}

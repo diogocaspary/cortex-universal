@@ -1,0 +1,27 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix identity: <https://github.com/diogocaspary/cortex-universal/ontology/identity-access#> .
+@prefix policy: <https://github.com/diogocaspary/cortex-universal/ontology/policy#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/identity-access>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/policy> ;
+    owl:versionInfo "0.1.0" .
+
+identity:DigitalIdentity a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Digital identity"@en .
+identity:AuthenticationEvent a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Authentication event"@en .
+identity:AccessGrant a owl:Class ; rdfs:subClassOf cubo:Policy ; rdfs:label "Access grant"@en .
+identity:PermissionAssignment a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Permission assignment"@en .
+identity:Session a owl:Class ; rdfs:subClassOf cubo:Context ; rdfs:label "Session"@en .
+identity:TrustLevel a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Trust level"@en .
+
+identity:representsAgent a owl:ObjectProperty ; rdfs:domain identity:DigitalIdentity ; rdfs:range cubo:Agent ; rdfs:label "represents agent"@en .
+identity:grantedTo a owl:ObjectProperty ; rdfs:domain identity:AccessGrant ; rdfs:range cubo:Agent ; rdfs:label "granted to"@en .
+identity:grantsPermission a owl:ObjectProperty ; rdfs:domain identity:AccessGrant ; rdfs:range policy:Permission ; rdfs:label "grants permission"@en .
+identity:authenticatedIdentity a owl:ObjectProperty ; rdfs:domain identity:AuthenticationEvent ; rdfs:range identity:DigitalIdentity ; rdfs:label "authenticated identity"@en .
+identity:hasTrustLevel a owl:ObjectProperty ; rdfs:range identity:TrustLevel ; rdfs:label "has trust level"@en .
+identity:assuranceLevel a owl:DatatypeProperty ; rdfs:range xsd:string ; rdfs:label "assurance level"@en .
+identity:sessionExpiresAt a owl:DatatypeProperty ; rdfs:domain identity:Session ; rdfs:range xsd:dateTime ; rdfs:label "session expires at"@en .

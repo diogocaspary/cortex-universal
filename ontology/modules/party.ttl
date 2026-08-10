@@ -1,0 +1,29 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix party: <https://github.com/diogocaspary/cortex-universal/ontology/party#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/party>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+party:Person a owl:Class ; rdfs:subClassOf cubo:Agent ; rdfs:label "Person"@en .
+party:Organization a owl:Class ; rdfs:subClassOf cubo:Agent, org:Organization ; rdfs:label "Organization"@en .
+party:Group a owl:Class ; rdfs:subClassOf cubo:Agent ; rdfs:label "Group"@en .
+party:ContactPoint a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Contact point"@en .
+party:Address a owl:Class ; rdfs:subClassOf cubo:Place ; rdfs:label "Address"@en .
+party:PartyRelationship a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Party relationship"@en .
+party:RoleAssignment a owl:Class ; rdfs:subClassOf cubo:Relationship ; rdfs:label "Role assignment"@en .
+
+party:hasContactPoint a owl:ObjectProperty ; rdfs:domain cubo:Agent ; rdfs:range party:ContactPoint .
+party:hasAddress a owl:ObjectProperty ; rdfs:domain cubo:Agent ; rdfs:range party:Address .
+party:relationshipSubject a owl:ObjectProperty ; rdfs:domain party:PartyRelationship ; rdfs:range cubo:Agent .
+party:relationshipObject a owl:ObjectProperty ; rdfs:domain party:PartyRelationship ; rdfs:range cubo:Agent .
+party:assignedAgent a owl:ObjectProperty ; rdfs:domain party:RoleAssignment ; rdfs:range cubo:Agent .
+party:assignedRole a owl:ObjectProperty ; rdfs:domain party:RoleAssignment ; rdfs:range cubo:Role .
+party:email a owl:DatatypeProperty ; rdfs:domain party:ContactPoint ; rdfs:range xsd:string .
+party:phone a owl:DatatypeProperty ; rdfs:domain party:ContactPoint ; rdfs:range xsd:string .
+party:channelType a owl:DatatypeProperty ; rdfs:domain party:ContactPoint ; rdfs:range xsd:string .

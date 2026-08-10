@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run conformance and security tests
+        run: npm run check
+
+      - name: Build production artifact
+        run: npm run build
+
+      - name: Audit runtime and bundled dashboard dependencies
+        run: npm audit --audit-level=high
+
+  postgres-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: cortex
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: cortex_admin_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d cortex"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Create restricted runtime role and migrate schema
+        env:
+          PGPASSWORD: cortex_admin_test
+        run: |
+          psql -h 127.0.0.1 -U postgres -d cortex -v ON_ERROR_STOP=1 \
+            -c "CREATE ROLE cortex_runtime LOGIN PASSWORD 'cortex_runtime_test';"
+          psql -h 127.0.0.1 -U postgres -d cortex -v ON_ERROR_STOP=1 \
+            -v embedding_dimensions=1536 -v cortex_runtime_role=cortex_runtime \
+            -f storage/postgres/001_init.sql
+
+      - name: Exercise pgvector, RLS, workforce, retrieval and audit integrity
+        env:
+          CORTEX_TEST_POSTGRES_URL: postgresql://cortex_runtime:cortex_runtime_test@127.0.0.1:5432/cortex
+        run: npx vitest run test/postgres.integration.test.ts

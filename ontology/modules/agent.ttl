@@ -1,0 +1,37 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/agent>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+agent:AIAgent a owl:Class ; rdfs:subClassOf cubo:Agent .
+agent:Tool a owl:Class ; rdfs:subClassOf cubo:Resource .
+agent:Capability a owl:Class ; rdfs:subClassOf cubo:Concept .
+agent:ActionDefinition a owl:Class ; rdfs:subClassOf cubo:Resource .
+agent:ActionExecution a owl:Class ; rdfs:subClassOf cubo:Action .
+agent:Plan a owl:Class ; rdfs:subClassOf cubo:Resource .
+agent:PlanStep a owl:Class ; rdfs:subClassOf cubo:Activity .
+agent:Precondition a owl:Class ; rdfs:subClassOf cubo:Concept .
+agent:Effect a owl:Class ; rdfs:subClassOf cubo:State .
+agent:Approval a owl:Class ; rdfs:subClassOf cubo:Event .
+
+agent:hasTool a owl:ObjectProperty ; rdfs:domain agent:AIAgent ; rdfs:range agent:Tool .
+agent:providesCapability a owl:ObjectProperty ; rdfs:domain agent:Tool ; rdfs:range agent:Capability .
+agent:implementsAction a owl:ObjectProperty ; rdfs:domain agent:Tool ; rdfs:range agent:ActionDefinition .
+agent:requiresPrecondition a owl:ObjectProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range agent:Precondition .
+agent:declaresEffect a owl:ObjectProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range agent:Effect .
+agent:hasStep a owl:ObjectProperty ; rdfs:domain agent:Plan ; rdfs:range agent:PlanStep .
+agent:usesAction a owl:ObjectProperty ; rdfs:domain agent:PlanStep ; rdfs:range agent:ActionDefinition .
+agent:approvedBy a owl:ObjectProperty ; rdfs:domain agent:ActionExecution ; rdfs:range agent:Approval .
+agent:actionKey a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:string .
+agent:capabilityKey a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:string .
+agent:riskLevel a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:integer .
+agent:requiresPermission a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:string .
+agent:idempotencyRequired a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:boolean .
+agent:reversible a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:boolean .
+agent:verificationAction a owl:DatatypeProperty ; rdfs:domain agent:ActionDefinition ; rdfs:range xsd:string .

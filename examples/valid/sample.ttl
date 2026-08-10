@@ -1,0 +1,72 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix agent: <https://github.com/diogocaspary/cortex-universal/ontology/agent#> .
+@prefix integration: <https://github.com/diogocaspary/cortex-universal/ontology/integration#> .
+@prefix party: <https://github.com/diogocaspary/cortex-universal/ontology/party#> .
+@prefix tenant: <https://github.com/diogocaspary/cortex-universal/ontology/tenant#> .
+@prefix ex: <https://github.com/diogocaspary/cortex-universal/example/data#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:tenant-1
+    a cubo:Tenant ;
+    cubo:identifier "tenant-1" ;
+    tenant:namespace "urn:tenant:tenant-1"^^xsd:anyURI ;
+    tenant:status "active" .
+
+ex:crm-source
+    a cubo:Source ;
+    cubo:identifier "crm-primary" ;
+    cubo:hasClassification cubo:Internal .
+
+ex:person-1
+    a party:Person ;
+    cubo:identifier "person-1" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:hasClassification cubo:Confidential .
+
+ex:claim-1
+    a cubo:Claim ;
+    cubo:identifier "claim-1" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:about ex:person-1 ;
+    cubo:derivedFrom ex:crm-source ;
+    cubo:observedAt "2026-08-08T14:30:02-03:00"^^xsd:dateTime ;
+    cubo:validFrom "2026-08-08T14:30:00-03:00"^^xsd:dateTime ;
+    cubo:hasVerificationStatus cubo:Verified ;
+    cubo:confidence 1.0 ;
+    cubo:hasClassification cubo:Confidential .
+
+ex:event-1
+    a cubo:Event ;
+    cubo:identifier "event-1" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:occurredAt "2026-08-08T14:30:00-03:00"^^xsd:dateTime ;
+    cubo:observedAt "2026-08-08T14:30:02-03:00"^^xsd:dateTime ;
+    cubo:derivedFrom ex:crm-source ;
+    cubo:payloadHash "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ;
+    cubo:hasClassification cubo:Confidential .
+
+ex:command-1
+    a cubo:Command ;
+    cubo:identifier "command-1" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:idempotencyKey "idem-000000000001" ;
+    cubo:hasClassification cubo:Confidential .
+
+ex:activate-subscription
+    a agent:ActionDefinition ;
+    cubo:identifier "activate-subscription" ;
+    agent:actionKey "subscription.activate" ;
+    agent:capabilityKey "subscription.write" ;
+    agent:riskLevel 2 ;
+    agent:requiresPermission "subscription.activate" ;
+    agent:idempotencyRequired true ;
+    agent:reversible true ;
+    agent:verificationAction "subscription.get" .
+
+ex:credential-reference-1
+    a integration:CredentialReference ;
+    cubo:identifier "credential-reference-1" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:hasClassification cubo:Restricted ;
+    integration:provider "vault" ;
+    integration:secretReference "vault://tenant-1/integrations/crm" .

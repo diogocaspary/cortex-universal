@@ -1,0 +1,57 @@
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix memory: <https://github.com/diogocaspary/cortex-universal/ontology/memory#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/cognition>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/memory> ;
+    owl:versionInfo "0.3.0" .
+
+cognition:KnowledgeGap a owl:Class ; rdfs:subClassOf cubo:Claim ; rdfs:label "Knowledge gap"@en .
+cognition:Contradiction a owl:Class ; rdfs:subClassOf cubo:Claim ; rdfs:label "Contradiction"@en .
+cognition:Hypothesis a owl:Class ; rdfs:subClassOf cubo:Claim ; rdfs:label "Hypothesis"@en .
+cognition:Synthesis a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Evidence synthesis"@en .
+cognition:AttentionContext a owl:Class ; rdfs:subClassOf cubo:Context ; rdfs:label "Attention context"@en .
+cognition:ReasoningTrace a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Reasoning trace"@en .
+cognition:Evaluation a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Evaluation"@en .
+cognition:ConsolidationJob a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Governed consolidation job"@en .
+cognition:CognitiveCycle a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Auditable cognitive cycle"@en .
+cognition:CognitiveStep a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Cognitive cycle step"@en .
+cognition:CognitivePhase a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Cognitive phase"@en .
+
+cognition:gapAbout a owl:ObjectProperty ; rdfs:domain cognition:KnowledgeGap ; rdfs:range cubo:Entity ; rdfs:label "gap about"@en .
+cognition:contradictsClaim a owl:ObjectProperty ; rdfs:domain cognition:Contradiction ; rdfs:range cubo:Claim ; rdfs:label "contradicts claim"@en .
+cognition:supportsHypothesis a owl:ObjectProperty ; rdfs:domain cubo:Evidence ; rdfs:range cognition:Hypothesis ; rdfs:label "supports hypothesis"@en .
+cognition:synthesizesClaim a owl:ObjectProperty ; rdfs:domain cognition:Synthesis ; rdfs:range cubo:Claim ; rdfs:label "synthesizes claim"@en .
+cognition:hasReasoningTrace a owl:ObjectProperty ; rdfs:domain cognition:Synthesis ; rdfs:range cognition:ReasoningTrace ; rdfs:label "has reasoning trace"@en .
+cognition:attendsTo a owl:ObjectProperty ; rdfs:domain cognition:AttentionContext ; rdfs:range cubo:Entity ; rdfs:label "attends to"@en .
+cognition:evaluates a owl:ObjectProperty ; rdfs:domain cognition:Evaluation ; rdfs:range cubo:Entity ; rdfs:label "evaluates"@en .
+cognition:consolidatesMemory a owl:ObjectProperty ; rdfs:domain cognition:ConsolidationJob ; rdfs:range memory:MemoryRecord ; rdfs:label "consolidates memory"@en .
+cognition:hasCognitiveStep a owl:ObjectProperty ; rdfs:domain cognition:CognitiveCycle ; rdfs:range cognition:CognitiveStep ; rdfs:label "has cognitive step"@en .
+cognition:hasCognitivePhase a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain cognition:CognitiveStep ; rdfs:range cognition:CognitivePhase ; rdfs:label "has cognitive phase"@en .
+cognition:nextCognitiveStep a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain cognition:CognitiveStep ; rdfs:range cognition:CognitiveStep ; rdfs:label "next cognitive step"@en .
+cognition:usesCognitiveInput a owl:ObjectProperty ; rdfs:domain cognition:CognitiveStep ; rdfs:range cubo:Entity ; rdfs:label "uses cognitive input"@en .
+cognition:producesCognitiveOutput a owl:ObjectProperty ; rdfs:domain cognition:CognitiveStep ; rdfs:range cubo:Entity ; rdfs:label "produces cognitive output"@en .
+
+cognition:gapCode a owl:DatatypeProperty ; rdfs:domain cognition:KnowledgeGap ; rdfs:range xsd:string ; rdfs:label "gap code"@en .
+cognition:jobStatus a owl:DatatypeProperty ; rdfs:domain cognition:ConsolidationJob ; rdfs:range xsd:string ; rdfs:label "job status"@en .
+cognition:evaluationScore a owl:DatatypeProperty ; rdfs:domain cognition:Evaluation ; rdfs:range xsd:decimal ; rdfs:label "evaluation score"@en .
+cognition:reasoningMethod a owl:DatatypeProperty ; rdfs:domain cognition:ReasoningTrace ; rdfs:range xsd:string ; rdfs:label "reasoning method"@en .
+cognition:sequenceNumber a owl:DatatypeProperty ; rdfs:domain cognition:CognitiveStep ; rdfs:range xsd:positiveInteger ; rdfs:label "sequence number"@en .
+cognition:cycleStatus a owl:DatatypeProperty ; rdfs:domain cognition:CognitiveCycle ; rdfs:range xsd:string ; rdfs:label "cycle status"@en .
+
+cognition:Perceive a cognition:CognitivePhase ; rdfs:label "Perceive"@en .
+cognition:Attend a cognition:CognitivePhase ; rdfs:label "Attend"@en .
+cognition:Retrieve a cognition:CognitivePhase ; rdfs:label "Retrieve"@en .
+cognition:Broadcast a cognition:CognitivePhase ; rdfs:label "Broadcast"@en .
+cognition:Simulate a cognition:CognitivePhase ; rdfs:label "Simulate"@en .
+cognition:ProposeAction a cognition:CognitivePhase ; rdfs:label "Propose action"@en .
+cognition:Evaluate a cognition:CognitivePhase ; rdfs:label "Evaluate"@en .
+cognition:ProposeConsolidation a cognition:CognitivePhase ; rdfs:label "Propose consolidation"@en .
+cognition:Abstain a cognition:CognitivePhase ; rdfs:label "Abstain"@en .
+cognition:Complete a cognition:CognitivePhase ; rdfs:label "Complete"@en .

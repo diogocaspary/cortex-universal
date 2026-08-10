@@ -1,0 +1,28 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix finance: <https://github.com/diogocaspary/cortex-universal/ontology/finance#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/finance>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+finance:MoneyAmount a owl:Class ; rdfs:subClassOf cubo:Resource .
+finance:Invoice a owl:Class ; rdfs:subClassOf cubo:Resource .
+finance:Payment a owl:Class ; rdfs:subClassOf cubo:Event .
+finance:Refund a owl:Class ; rdfs:subClassOf cubo:Event .
+finance:Credit a owl:Class ; rdfs:subClassOf cubo:Resource .
+finance:Charge a owl:Class ; rdfs:subClassOf cubo:Event .
+finance:Transaction a owl:Class ; rdfs:subClassOf cubo:Event .
+finance:PaymentMethodReference a owl:Class ; rdfs:subClassOf cubo:Resource .
+
+finance:hasAmount a owl:ObjectProperty ; rdfs:range finance:MoneyAmount .
+finance:issuedTo a owl:ObjectProperty ; rdfs:domain finance:Invoice ; rdfs:range cubo:Agent .
+finance:settles a owl:ObjectProperty ; rdfs:domain finance:Payment ; rdfs:range finance:Invoice .
+finance:refunds a owl:ObjectProperty ; rdfs:domain finance:Refund ; rdfs:range finance:Payment .
+finance:usesMethod a owl:ObjectProperty ; rdfs:range finance:PaymentMethodReference .
+finance:amountValue a owl:DatatypeProperty ; rdfs:domain finance:MoneyAmount ; rdfs:range xsd:decimal .
+finance:currencyCode a owl:DatatypeProperty ; rdfs:domain finance:MoneyAmount ; rdfs:range xsd:string .
+finance:externalReference a owl:DatatypeProperty ; rdfs:range xsd:string .

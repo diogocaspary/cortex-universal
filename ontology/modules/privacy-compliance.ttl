@@ -1,0 +1,35 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix data: <https://github.com/diogocaspary/cortex-universal/ontology/data-governance#> .
+@prefix policy: <https://github.com/diogocaspary/cortex-universal/ontology/policy#> .
+@prefix process: <https://github.com/diogocaspary/cortex-universal/ontology/process#> .
+@prefix risk: <https://github.com/diogocaspary/cortex-universal/ontology/risk#> .
+@prefix privacy: <https://github.com/diogocaspary/cortex-universal/ontology/privacy-compliance#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/privacy-compliance>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/data-governance>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/policy>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/process>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/risk> ;
+    owl:versionInfo "0.1.0" .
+
+privacy:DataSubject a owl:Class ; rdfs:subClassOf cubo:Role ; rdfs:label "Data subject"@en .
+privacy:PersonalDataCategory a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Personal data category"@en .
+privacy:ProcessingActivity a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Processing activity"@en .
+privacy:DataSubjectRequest a owl:Class ; rdfs:subClassOf process:Case ; rdfs:label "Data subject request"@en .
+privacy:ErasureRequest a owl:Class ; rdfs:subClassOf privacy:DataSubjectRequest ; rdfs:label "Erasure request"@en .
+privacy:AccessRequest a owl:Class ; rdfs:subClassOf privacy:DataSubjectRequest ; rdfs:label "Access request"@en .
+privacy:PrivacyNotice a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Privacy notice"@en .
+privacy:TransferAssessment a owl:Class ; rdfs:subClassOf risk:RiskAssessment ; rdfs:label "Transfer assessment"@en .
+
+privacy:concernsDataSubject a owl:ObjectProperty ; rdfs:domain privacy:DataSubjectRequest ; rdfs:range cubo:Agent ; rdfs:label "concerns data subject"@en .
+privacy:processesDataAsset a owl:ObjectProperty ; rdfs:domain privacy:ProcessingActivity ; rdfs:range data:DataAsset ; rdfs:label "processes data asset"@en .
+privacy:hasPersonalDataCategory a owl:ObjectProperty ; rdfs:domain privacy:ProcessingActivity ; rdfs:range privacy:PersonalDataCategory ; rdfs:label "has personal data category"@en .
+privacy:hasPurpose a owl:ObjectProperty ; rdfs:domain privacy:ProcessingActivity ; rdfs:range policy:ProcessingPurpose ; rdfs:label "has purpose"@en .
+privacy:hasLegalBasis a owl:ObjectProperty ; rdfs:domain privacy:ProcessingActivity ; rdfs:range policy:LegalBasis ; rdfs:label "has legal basis"@en .
+privacy:retentionDays a owl:DatatypeProperty ; rdfs:domain privacy:ProcessingActivity ; rdfs:range xsd:integer ; rdfs:label "retention days"@en .
+privacy:destinationCountry a owl:DatatypeProperty ; rdfs:domain privacy:TransferAssessment ; rdfs:range xsd:string ; rdfs:label "destination country"@en .

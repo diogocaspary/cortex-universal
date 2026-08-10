@@ -1,0 +1,46 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix knowledge: <https://github.com/diogocaspary/cortex-universal/ontology/knowledge#> .
+@prefix retrieval: <https://github.com/diogocaspary/cortex-universal/ontology/retrieval#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/retrieval>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/knowledge> ;
+    owl:versionInfo "0.2.0" .
+
+retrieval:RetrievalRequest a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Retrieval request"@en .
+retrieval:RetrievalTrace a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Retrieval trace"@en .
+retrieval:RetrievalResult a owl:Class ; rdfs:subClassOf cubo:Evidence ; rdfs:label "Retrieval result"@en .
+retrieval:RetrievalChannel a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Retrieval channel"@en .
+retrieval:EmbeddingReference a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Embedding reference"@en .
+retrieval:GraphCommunity a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Graph community"@en .
+retrieval:CommunitySummary a owl:Class ; rdfs:subClassOf knowledge:KnowledgeAsset ; rdfs:label "Community summary"@en .
+retrieval:AccessFilter a owl:Class ; rdfs:subClassOf cubo:Policy ; rdfs:label "Retrieval access filter"@en .
+
+retrieval:hasTrace a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalRequest ; rdfs:range retrieval:RetrievalTrace ; rdfs:label "has trace"@en .
+retrieval:hasResult a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalTrace ; rdfs:range retrieval:RetrievalResult ; rdfs:label "has result"@en .
+retrieval:usesChannel a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalTrace ; rdfs:range retrieval:RetrievalChannel ; rdfs:label "uses channel"@en .
+retrieval:citesEvidence a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range cubo:Evidence ; rdfs:label "cites evidence"@en .
+retrieval:retrievedFrom a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range cubo:Source ; rdfs:label "retrieved from"@en .
+retrieval:memberOfCommunity a owl:ObjectProperty ; rdfs:domain cubo:Entity ; rdfs:range retrieval:GraphCommunity ; rdfs:label "member of community"@en .
+retrieval:summarizedBy a owl:ObjectProperty ; rdfs:domain retrieval:GraphCommunity ; rdfs:range retrieval:CommunitySummary ; rdfs:label "summarized by"@en .
+retrieval:filteredBy a owl:ObjectProperty ; rdfs:domain retrieval:RetrievalTrace ; rdfs:range retrieval:AccessFilter ; rdfs:label "filtered by"@en .
+
+retrieval:queryText a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalRequest ; rdfs:range xsd:string ; rdfs:label "query text"@en .
+retrieval:requestedAt a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalRequest ; rdfs:range xsd:dateTime ; rdfs:label "requested at"@en .
+retrieval:rank a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range xsd:integer ; rdfs:label "rank"@en .
+retrieval:retrievalScore a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range xsd:decimal ; rdfs:label "retrieval score"@en .
+retrieval:keywordScore a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range xsd:decimal ; rdfs:label "keyword score"@en .
+retrieval:vectorScore a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range xsd:decimal ; rdfs:label "vector score"@en .
+retrieval:graphScore a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalResult ; rdfs:range xsd:decimal ; rdfs:label "graph score"@en .
+retrieval:embeddingModel a owl:DatatypeProperty ; rdfs:domain retrieval:EmbeddingReference ; rdfs:range xsd:string ; rdfs:label "embedding model"@en .
+retrieval:indexVersion a owl:DatatypeProperty ; rdfs:domain retrieval:RetrievalTrace ; rdfs:range xsd:string ; rdfs:label "index version"@en .
+
+retrieval:Keyword a retrieval:RetrievalChannel ; rdfs:label "Keyword"@en .
+retrieval:Vector a retrieval:RetrievalChannel ; rdfs:label "Vector"@en .
+retrieval:GraphTraversal a retrieval:RetrievalChannel ; rdfs:label "Graph traversal"@en .
+retrieval:Reranker a retrieval:RetrievalChannel ; rdfs:label "Reranker"@en .

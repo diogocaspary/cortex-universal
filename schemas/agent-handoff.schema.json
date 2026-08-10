@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/agent-handoff.schema.json",
+  "title": "Evidence-bearing governed agent handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tenant_id", "brain_id", "from_agent", "to_agent", "reason", "evidence_ids"],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "from_agent": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "to_agent": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "reason": { "type": "string", "minLength": 8, "maxLength": 2048 },
+    "evidence_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    }
+  }
+}

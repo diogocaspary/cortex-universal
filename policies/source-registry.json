@@ -1,0 +1,17 @@
+{
+  "version": "0.6.0",
+  "sources": [
+    {
+      "id": "conformance-fixture",
+      "kind": "test-fixture",
+      "environments": ["development", "test"],
+      "tenant_ids": ["*"],
+      "provenance_systems": ["conformance-suite"],
+      "maximum_classification": "restricted",
+      "attestation": {
+        "method": "none",
+        "reason": "conformance-fixture-only"
+      }
+    }
+  ]
+}

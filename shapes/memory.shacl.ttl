@@ -1,0 +1,45 @@
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix memory: <https://github.com/diogocaspary/cortex-universal/ontology/memory#> .
+@prefix retrieval: <https://github.com/diogocaspary/cortex-universal/ontology/retrieval#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+memory:MemoryRecordShape
+    a sh:NodeShape ;
+    sh:targetClass memory:MemoryRecord ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path memory:belongsToMemorySpace ; sh:minCount 1 ; sh:maxCount 1 ; sh:class memory:MemorySpace ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path memory:hasMemoryStatus ; sh:minCount 1 ; sh:maxCount 1 ; sh:class memory:MemoryStatus ] ;
+    sh:property [ sh:path memory:hasEvidence ; sh:minCount 1 ; sh:class cubo:Evidence ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path cubo:validFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ; sh:lessThan cubo:validUntil ] .
+
+memory:EpisodeShape
+    a sh:NodeShape ;
+    sh:targetClass memory:Episode ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [ sh:path cubo:derivedFrom ; sh:minCount 1 ; sh:class cubo:Source ] .
+
+retrieval:RetrievalTraceShape
+    a sh:NodeShape ;
+    sh:targetClass retrieval:RetrievalTrace ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path retrieval:hasResult ; sh:minCount 1 ; sh:class retrieval:RetrievalResult ] ;
+    sh:property [ sh:path retrieval:indexVersion ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] .
+
+cognition:KnowledgeGapShape
+    a sh:NodeShape ;
+    sh:targetClass cognition:KnowledgeGap ;
+    sh:property [ sh:path cubo:identifier ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:hasTenant ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:Tenant ] ;
+    sh:property [ sh:path cubo:hasClassification ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cubo:DataClassification ] ;
+    sh:property [ sh:path cognition:gapAbout ; sh:minCount 1 ; sh:class cubo:Entity ] ;
+    sh:property [ sh:path cognition:gapCode ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path cubo:observedAt ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:dateTime ] .

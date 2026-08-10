@@ -1,0 +1,138 @@
+id: cortex-universal
+name: Cortex Universal Business Ontology
+version: 0.6.0
+status: experimental
+namespace: https://github.com/diogocaspary/cortex-universal/ontology/
+core: ontology/core/cubo-core.ttl
+minimum_node_version: 22.13.0
+standards:
+  - RDF 1.1
+  - RDFS 1.1
+  - OWL 2
+  - SHACL 1.0
+  - JSON-LD 1.1
+  - JSON Schema 2020-12
+  - OpenAPI 3.1
+modules:
+  - id: party
+    file: ontology/modules/party.ttl
+  - id: organization
+    file: ontology/modules/organization.ttl
+  - id: customer
+    file: ontology/modules/customer.ttl
+  - id: offering
+    file: ontology/modules/offering.ttl
+  - id: agreement
+    file: ontology/modules/agreement.ttl
+  - id: commerce
+    file: ontology/modules/commerce.ttl
+  - id: finance
+    file: ontology/modules/finance.ttl
+  - id: process
+    file: ontology/modules/process.ttl
+  - id: communication
+    file: ontology/modules/communication.ttl
+  - id: knowledge
+    file: ontology/modules/knowledge.ttl
+  - id: agent
+    file: ontology/modules/agent.ttl
+  - id: tool-governance
+    file: ontology/modules/tool-governance.ttl
+  - id: agent-workforce
+    file: ontology/modules/agent-workforce.ttl
+  - id: policy
+    file: ontology/modules/policy.ttl
+  - id: risk
+    file: ontology/modules/risk.ttl
+  - id: metric
+    file: ontology/modules/metric.ttl
+  - id: integration
+    file: ontology/modules/integration.ttl
+  - id: tenant
+    file: ontology/modules/tenant.ttl
+  - id: audit
+    file: ontology/modules/audit.ttl
+  - id: identity-access
+    file: ontology/modules/identity-access.ttl
+  - id: workforce
+    file: ontology/modules/workforce.ttl
+  - id: project
+    file: ontology/modules/project.ttl
+  - id: asset
+    file: ontology/modules/asset.ttl
+  - id: supply-chain
+    file: ontology/modules/supply-chain.ttl
+  - id: service-management
+    file: ontology/modules/service-management.ttl
+  - id: data-governance
+    file: ontology/modules/data-governance.ttl
+  - id: privacy-compliance
+    file: ontology/modules/privacy-compliance.ttl
+  - id: memory
+    file: ontology/modules/memory.ttl
+  - id: retrieval
+    file: ontology/modules/retrieval.ttl
+  - id: cognition
+    file: ontology/modules/cognition.ttl
+  - id: attention
+    file: ontology/modules/attention.ttl
+  - id: world-model
+    file: ontology/modules/world-model.ttl
+  - id: metacognition
+    file: ontology/modules/metacognition.ttl
+  - id: learning
+    file: ontology/modules/learning.ttl
+shapes:
+  - shapes/core.shacl.ttl
+  - shapes/operations.shacl.ttl
+  - shapes/security.shacl.ttl
+  - shapes/governance.shacl.ttl
+  - shapes/memory.shacl.ttl
+  - shapes/cognition.shacl.ttl
+  - shapes/tool-governance.shacl.ttl
+  - shapes/agent-workforce.shacl.ttl
+schemas:
+  - schemas/package-manifest.schema.json
+  - schemas/claim.schema.json
+  - schemas/event.schema.json
+  - schemas/action.schema.json
+  - schemas/action-registry.schema.json
+  - schemas/policy-request.schema.json
+  - schemas/module-manifest.schema.json
+  - schemas/policy-bundle.schema.json
+  - schemas/policy-decision.schema.json
+  - schemas/shacl-report.schema.json
+  - schemas/ingestion-envelope.schema.json
+  - schemas/retrieval-request.schema.json
+  - schemas/retrieval-response.schema.json
+  - schemas/graph-snapshot.schema.json
+  - schemas/attention-selection.schema.json
+  - schemas/prediction-observation.schema.json
+  - schemas/metacognitive-evaluation.schema.json
+  - schemas/consolidation-proposal.schema.json
+  - schemas/cognitive-cycle.schema.json
+  - schemas/brain-ingestion.schema.json
+  - schemas/agent-registry.schema.json
+  - schemas/agent-session.schema.json
+  - schemas/agent-handoff.schema.json
+  - schemas/source-registry.schema.json
+  - schemas/tool-proposal.schema.json
+  - schemas/guard-decision.schema.json
+  - schemas/effect-outcome.schema.json
+  - schemas/reasoning-report.schema.json
+  - schemas/operation-registry.schema.json
+  - schemas/brain-activity.schema.json
+  - schemas/audit-integrity.schema.json
+  - schemas/sanitized-failure.schema.json
+  - schemas/workforce-goal.schema.json
+  - schemas/work-item.schema.json
+  - schemas/work-item-checkout.schema.json
+  - schemas/work-item-transition.schema.json
+  - schemas/workforce-routine.schema.json
+  - schemas/workforce-routine-materialize.schema.json
+  - schemas/workforce-heartbeat.schema.json
+  - schemas/workforce-cost-event.schema.json
+  - schemas/workforce-evaluation.schema.json
+  - schemas/skill-registry.schema.json
+  - schemas/skill-trust-registry.schema.json
+profiles: []

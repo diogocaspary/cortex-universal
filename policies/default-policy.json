@@ -1,0 +1,113 @@
+{
+  "version": "0.6.0",
+  "default_effect": "deny",
+  "rules": [
+    {
+      "id": "allow-ontology-guard",
+      "effect": "allow",
+      "roles": ["cortex-local-operator", "agent-operator"],
+      "actions": ["guard.evaluate"],
+      "classifications": ["public", "internal", "confidential", "restricted"],
+      "obligations": ["audit.authorization_decision", "effect.not_executed"]
+    },
+    {
+      "id": "allow-ontology-read",
+      "effect": "allow",
+      "roles": ["semantic-service", "cortex-local-operator"],
+      "actions": ["ontology.read"],
+      "classifications": ["public", "internal", "confidential", "restricted"],
+      "obligations": ["audit.read"]
+    },
+    {
+      "id": "allow-semantic-validation",
+      "effect": "allow",
+      "roles": ["semantic-service"],
+      "actions": ["ontology.validate"],
+      "classifications": ["public", "internal", "confidential", "restricted"],
+      "obligations": ["audit.authorization_decision"]
+    },
+    {
+      "id": "allow-evidence-ingestion",
+      "effect": "allow",
+      "roles": ["knowledge-curator", "cortex-local-operator"],
+      "actions": ["evidence.ingest"],
+      "classifications": ["public", "internal", "confidential", "restricted"],
+      "obligations": ["source.verify", "audit.write"]
+    },
+    {
+      "id": "allow-knowledge-read",
+      "effect": "allow",
+      "roles": ["knowledge-reader", "knowledge-curator"],
+      "actions": ["knowledge.read"],
+      "classifications": ["public", "internal", "confidential"],
+      "obligations": ["audit.read"]
+    },
+    {
+      "id": "allow-runtime-governance",
+      "effect": "allow",
+      "roles": ["cortex-local-operator", "agent-operator", "cognitive-service", "auditor"],
+      "actions": [
+        "activity.read",
+        "agent.session.create",
+        "agent.handoff.propose",
+        "cognition.evaluate",
+        "policy.evaluate",
+        "observability.read",
+        "workforce.read",
+        "workforce.goal.create",
+        "workforce.work.create",
+        "workforce.work.checkout",
+        "workforce.work.transition",
+        "workforce.routine.create",
+        "workforce.routine.materialize",
+        "workforce.cost.record",
+        "workforce.heartbeat.record",
+        "workforce.evaluation.record"
+      ],
+      "classifications": ["public", "internal", "confidential", "restricted"],
+      "obligations": ["audit.authorization_decision"]
+    },
+    {
+      "id": "allow-claim-proposal",
+      "effect": "allow",
+      "roles": ["knowledge-curator"],
+      "actions": ["claim.propose"],
+      "classifications": ["internal", "confidential", "restricted"],
+      "obligations": ["claim.store_in_quarantine", "audit.write"]
+    },
+    {
+      "id": "allow-subscription-activation",
+      "effect": "allow",
+      "roles": ["subscription-operator"],
+      "actions": ["subscription.activate"],
+      "classifications": ["internal", "confidential"],
+      "obligations": ["command.use_idempotency_key", "audit.write", "effect.verify"]
+    },
+    {
+      "id": "allow-approved-refund",
+      "effect": "allow",
+      "roles": ["finance-operator"],
+      "actions": ["payment.refund"],
+      "classifications": ["confidential", "restricted"],
+      "obligations": [
+        "approval.require_human",
+        "command.use_idempotency_key",
+        "audit.write",
+        "effect.verify"
+      ]
+    },
+    {
+      "id": "allow-dual-controlled-export",
+      "effect": "allow",
+      "roles": ["data-protection-officer"],
+      "actions": ["data.bulk_export"],
+      "classifications": ["confidential", "restricted"],
+      "obligations": [
+        "approval.require_dual_control",
+        "export.encrypt",
+        "export.expire",
+        "audit.write"
+      ]
+    }
+  ]
+}

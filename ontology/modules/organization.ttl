@@ -1,0 +1,25 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix orgx: <https://github.com/diogocaspary/cortex-universal/ontology/organization#> .
+@prefix party: <https://github.com/diogocaspary/cortex-universal/ontology/party#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/organization>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/party> ;
+    owl:versionInfo "0.1.0" .
+
+orgx:OrganizationalUnit a owl:Class ; rdfs:subClassOf party:Organization, org:OrganizationalUnit .
+orgx:Team a owl:Class ; rdfs:subClassOf party:Group .
+orgx:Position a owl:Class ; rdfs:subClassOf cubo:Role, org:Post .
+orgx:Membership a owl:Class ; rdfs:subClassOf party:RoleAssignment, org:Membership .
+orgx:Responsibility a owl:Class ; rdfs:subClassOf cubo:Concept .
+
+orgx:hasUnit a owl:ObjectProperty ; rdfs:domain party:Organization ; rdfs:range orgx:OrganizationalUnit .
+orgx:hasMembership a owl:ObjectProperty ; rdfs:domain party:Organization ; rdfs:range orgx:Membership .
+orgx:member a owl:ObjectProperty ; rdfs:domain orgx:Membership ; rdfs:range cubo:Agent .
+orgx:holdsPosition a owl:ObjectProperty ; rdfs:domain orgx:Membership ; rdfs:range orgx:Position .
+orgx:reportsTo a owl:ObjectProperty ; rdfs:domain orgx:Position ; rdfs:range orgx:Position .
+orgx:hasResponsibility a owl:ObjectProperty ; rdfs:domain orgx:Position ; rdfs:range orgx:Responsibility .

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/graph-snapshot.schema.json",
+  "title": "Read-only Cortex visualization graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "nodes", "edges", "stats"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "nodes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_count", "edge_count", "module_count", "modules", "by_kind"],
+      "properties": {
+        "node_count": { "type": "integer", "minimum": 0 },
+        "edge_count": { "type": "integer", "minimum": 0 },
+        "module_count": { "type": "integer", "minimum": 0 },
+        "modules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+        },
+        "by_kind": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "kind", "module", "description", "degree"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "label": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "kind": {
+          "enum": [
+            "action",
+            "capability",
+            "class",
+            "classification",
+            "concept",
+            "datatype-property",
+            "effect",
+            "external",
+            "object-property",
+            "obligation",
+            "ontology",
+            "permission",
+            "policy-bundle",
+            "policy-rule",
+            "precondition",
+            "role",
+            "shape"
+          ]
+        },
+        "module": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "description": { "type": ["string", "null"], "maxLength": 4096 },
+        "degree": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source", "target", "label", "predicate", "kind"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^edge-[1-9][0-9]*$" },
+        "source": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "target": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "label": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "predicate": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "kind": { "enum": ["rdf", "policy"] }
+      }
+    }
+  }
+}

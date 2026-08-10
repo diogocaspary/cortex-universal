@@ -1,0 +1,33 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix customer: <https://github.com/diogocaspary/cortex-universal/ontology/customer#> .
+@prefix offering: <https://github.com/diogocaspary/cortex-universal/ontology/offering#> .
+@prefix process: <https://github.com/diogocaspary/cortex-universal/ontology/process#> .
+@prefix risk: <https://github.com/diogocaspary/cortex-universal/ontology/risk#> .
+@prefix service: <https://github.com/diogocaspary/cortex-universal/ontology/service-management#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/service-management>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/customer>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/offering>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/process>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/risk> ;
+    owl:versionInfo "0.1.0" .
+
+service:ServiceRequest a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Service request"@en .
+service:SupportCase a owl:Class ; rdfs:subClassOf process:Case ; rdfs:label "Support case"@en .
+service:ServiceIncident a owl:Class ; rdfs:subClassOf risk:Incident ; rdfs:label "Service incident"@en .
+service:Problem a owl:Class ; rdfs:subClassOf cubo:Entity ; rdfs:label "Problem"@en .
+service:ChangeRequest a owl:Class ; rdfs:subClassOf cubo:Command ; rdfs:label "Change request"@en .
+service:Resolution a owl:Class ; rdfs:subClassOf cubo:Evidence ; rdfs:label "Resolution"@en .
+service:ServiceInteraction a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Service interaction"@en .
+
+service:requestedBy a owl:ObjectProperty ; rdfs:domain service:ServiceRequest ; rdfs:range customer:CustomerAccount ; rdfs:label "requested by"@en .
+service:concernsService a owl:ObjectProperty ; rdfs:range offering:Service ; rdfs:label "concerns service"@en .
+service:relatedIncident a owl:ObjectProperty ; rdfs:domain service:SupportCase ; rdfs:range service:ServiceIncident ; rdfs:label "related incident"@en .
+service:causedByProblem a owl:ObjectProperty ; rdfs:domain service:ServiceIncident ; rdfs:range service:Problem ; rdfs:label "caused by problem"@en .
+service:hasResolution a owl:ObjectProperty ; rdfs:domain service:SupportCase ; rdfs:range service:Resolution ; rdfs:label "has resolution"@en .
+service:priority a owl:DatatypeProperty ; rdfs:range xsd:string ; rdfs:label "priority"@en .

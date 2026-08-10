@@ -1,0 +1,24 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix knowledge: <https://github.com/diogocaspary/cortex-universal/ontology/knowledge#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/knowledge>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+knowledge:Document a owl:Class ; rdfs:subClassOf cubo:Evidence .
+knowledge:KnowledgeAsset a owl:Class ; rdfs:subClassOf cubo:Resource .
+knowledge:AssertionSet a owl:Class ; rdfs:subClassOf cubo:Resource .
+knowledge:Version a owl:Class ; rdfs:subClassOf cubo:Resource .
+knowledge:Citation a owl:Class ; rdfs:subClassOf cubo:Relationship .
+knowledge:RetrievalChunk a owl:Class ; rdfs:subClassOf cubo:Evidence .
+
+knowledge:containsClaim a owl:ObjectProperty ; rdfs:domain knowledge:AssertionSet ; rdfs:range cubo:Claim .
+knowledge:hasVersion a owl:ObjectProperty ; rdfs:domain knowledge:KnowledgeAsset ; rdfs:range knowledge:Version .
+knowledge:cites a owl:ObjectProperty ; rdfs:domain knowledge:Citation ; rdfs:range cubo:Evidence .
+knowledge:chunkOf a owl:ObjectProperty ; rdfs:domain knowledge:RetrievalChunk ; rdfs:range knowledge:Document .
+knowledge:contentHash a owl:DatatypeProperty ; rdfs:range xsd:string .
+knowledge:mediaType a owl:DatatypeProperty ; rdfs:range xsd:string .

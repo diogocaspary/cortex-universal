@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/workforce-goal.schema.json",
+  "title": "Governed workforce goal creation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "brain_id",
+    "classification",
+    "title",
+    "description",
+    "success_criteria",
+    "owner_agent_id",
+    "idempotency_key"
+  ],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "parent_goal_id": { "type": ["string", "null"], "pattern": "^goal:[a-f0-9]{32}$" },
+    "title": { "type": "string", "minLength": 3, "maxLength": 256 },
+    "description": { "type": "string", "minLength": 8, "maxLength": 4096 },
+    "success_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 25,
+      "items": { "$ref": "#/$defs/criterion" }
+    },
+    "owner_agent_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "idempotency_key": { "type": "string", "minLength": 8, "maxLength": 256 }
+  },
+  "$defs": {
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "verification_method", "required"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{1,63}$" },
+        "description": { "type": "string", "minLength": 3, "maxLength": 512 },
+        "verification_method": { "enum": ["evidence", "test", "human-approval"] },
+        "required": { "type": "boolean" }
+      }
+    }
+  }
+}

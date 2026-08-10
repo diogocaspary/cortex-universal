@@ -1,0 +1,25 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix party: <https://github.com/diogocaspary/cortex-universal/ontology/party#> .
+@prefix tenant: <https://github.com/diogocaspary/cortex-universal/ontology/tenant#> .
+@prefix ex: <https://github.com/diogocaspary/cortex-universal/example/invalid#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:tenant-1
+    a cubo:Tenant ;
+    cubo:identifier "tenant-1" ;
+    tenant:namespace "urn:tenant:tenant-1"^^xsd:anyURI ;
+    tenant:status "active" .
+
+ex:person-1
+    a party:Person ;
+    cubo:identifier "person-1" .
+
+ex:untrusted-claim
+    a cubo:Claim ;
+    cubo:identifier "untrusted-claim" ;
+    cubo:hasTenant ex:tenant-1 ;
+    cubo:about ex:person-1 ;
+    cubo:observedAt "2026-08-08T14:30:02-03:00"^^xsd:dateTime ;
+    cubo:hasVerificationStatus cubo:Proposed ;
+    cubo:confidence 0.5 ;
+    cubo:hasClassification cubo:Internal .

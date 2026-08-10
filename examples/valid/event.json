@@ -1,0 +1,16 @@
+{
+  "event_id": "evt:payment-approved:001",
+  "event_type": "PaymentApproved",
+  "tenant_id": "tenant-1",
+  "actor": { "id": "payments-gateway", "type": "System" },
+  "subject": { "id": "payment-889", "type": "Payment" },
+  "occurred_at": "2026-08-08T14:30:00-03:00",
+  "observed_at": "2026-08-08T14:30:02-03:00",
+  "correlation_id": "checkout-332",
+  "causation_id": "payment-request-331",
+  "source": "payments-gateway",
+  "payload_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "schema_version": "1.0.0",
+  "classification": "confidential",
+  "data": { "amount_minor": 3000, "currency": "BRL" }
+}

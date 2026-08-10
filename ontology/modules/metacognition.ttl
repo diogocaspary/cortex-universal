@@ -1,0 +1,37 @@
+@prefix cognition: <https://github.com/diogocaspary/cortex-universal/ontology/cognition#> .
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix meta: <https://github.com/diogocaspary/cortex-universal/ontology/metacognition#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/metacognition>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/cognition> ;
+    owl:versionInfo "0.3.0" .
+
+meta:ConfidenceJudgment a owl:Class ; rdfs:subClassOf cubo:Claim ; rdfs:label "Confidence judgment"@en .
+meta:CalibrationAssessment a owl:Class ; rdfs:subClassOf cognition:Evaluation ; rdfs:label "Calibration assessment"@en .
+meta:CognitiveMode a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Cognitive processing mode"@en .
+meta:ConflictSignal a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Cognitive conflict signal"@en .
+meta:UncertaintySignal a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Uncertainty signal"@en .
+meta:CapabilityModel a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Explicit cognitive capability model"@en .
+
+meta:evaluatesTrace a owl:ObjectProperty ; rdfs:domain meta:ConfidenceJudgment ; rdfs:range cognition:ReasoningTrace ; rdfs:label "evaluates trace"@en .
+meta:judgesClaim a owl:ObjectProperty ; rdfs:domain meta:ConfidenceJudgment ; rdfs:range cubo:Claim ; rdfs:label "judges claim"@en .
+meta:hasConfidenceSample a owl:ObjectProperty ; rdfs:domain meta:CalibrationAssessment ; rdfs:range meta:ConfidenceJudgment ; rdfs:label "has confidence sample"@en .
+meta:recommendsMode a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain cognition:Evaluation ; rdfs:range meta:CognitiveMode ; rdfs:label "recommends mode"@en .
+meta:modelsCapability a owl:ObjectProperty ; rdfs:domain meta:CapabilityModel ; rdfs:range cubo:Activity ; rdfs:label "models capability"@en .
+
+meta:reportedConfidence a owl:DatatypeProperty ; rdfs:domain meta:ConfidenceJudgment ; rdfs:range xsd:decimal ; rdfs:label "reported confidence"@en .
+meta:wasCorrect a owl:DatatypeProperty ; rdfs:domain meta:ConfidenceJudgment ; rdfs:range xsd:boolean ; rdfs:label "was correct"@en .
+meta:brierScore a owl:DatatypeProperty ; rdfs:domain meta:CalibrationAssessment ; rdfs:range xsd:decimal ; rdfs:label "Brier score"@en .
+meta:expectedCalibrationError a owl:DatatypeProperty ; rdfs:domain meta:CalibrationAssessment ; rdfs:range xsd:decimal ; rdfs:label "expected calibration error"@en .
+meta:calibrationBias a owl:DatatypeProperty ; rdfs:domain meta:CalibrationAssessment ; rdfs:range xsd:decimal ; rdfs:label "calibration bias"@en .
+
+meta:FastMode a meta:CognitiveMode ; rdfs:label "Fast mode"@en .
+meta:DeliberativeMode a meta:CognitiveMode ; rdfs:label "Deliberative mode"@en .
+meta:AbstentionMode a meta:CognitiveMode ; rdfs:label "Abstention mode"@en .
+

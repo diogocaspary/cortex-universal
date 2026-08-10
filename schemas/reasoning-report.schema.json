@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/reasoning-report.schema.json",
+  "title": "Bounded explainable ontology reasoning report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "complete_owl_reasoner",
+    "generated_at",
+    "explicit_triples",
+    "inferred_triples",
+    "iterations",
+    "truncated",
+    "consistent",
+    "inferences",
+    "diagnostics"
+  ],
+  "properties": {
+    "profile": { "const": "cortex-rdfs-owl-rl-subset-v1" },
+    "complete_owl_reasoner": { "const": false },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "explicit_triples": { "type": "integer", "minimum": 0 },
+    "inferred_triples": { "type": "integer", "minimum": 0 },
+    "iterations": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "truncated": { "type": "boolean" },
+    "consistent": { "type": "boolean" },
+    "inferences": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["subject", "predicate", "object", "rule", "support"],
+        "properties": {
+          "subject": { "type": "string", "minLength": 1 },
+          "predicate": { "type": "string", "minLength": 1 },
+          "object": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 },
+          "support": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "code", "subject", "predicate", "values", "message"],
+        "properties": {
+          "severity": { "enum": ["warning", "violation"] },
+          "code": {
+            "enum": ["disjoint_type_conflict", "owl_nothing_instance", "functional_value_ambiguity"]
+          },
+          "subject": { "type": "string", "minLength": 1 },
+          "predicate": { "type": "string", "minLength": 1 },
+          "values": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "message": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

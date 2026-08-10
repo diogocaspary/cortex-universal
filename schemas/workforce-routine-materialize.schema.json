@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/workforce-routine-materialize.schema.json",
+  "title": "Materialize due workforce routines",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tenant_id", "brain_id", "classification", "now"],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "now": { "type": "string", "format": "date-time" }
+  }
+}

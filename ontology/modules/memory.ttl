@@ -1,0 +1,44 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix knowledge: <https://github.com/diogocaspary/cortex-universal/ontology/knowledge#> .
+@prefix memory: <https://github.com/diogocaspary/cortex-universal/ontology/memory#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/memory>
+    a owl:Ontology ;
+    owl:imports
+        <https://github.com/diogocaspary/cortex-universal/ontology/core> ,
+        <https://github.com/diogocaspary/cortex-universal/ontology/knowledge> ;
+    owl:versionInfo "0.2.0" .
+
+memory:MemoryRecord a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Memory record"@en .
+memory:MemorySpace a owl:Class ; rdfs:subClassOf cubo:Resource ; rdfs:label "Memory space"@en .
+memory:WorkingMemory a owl:Class ; rdfs:subClassOf memory:MemoryRecord ; rdfs:label "Working memory"@en .
+memory:EpisodicMemory a owl:Class ; rdfs:subClassOf memory:MemoryRecord ; rdfs:label "Episodic memory"@en .
+memory:SemanticMemory a owl:Class ; rdfs:subClassOf memory:MemoryRecord ; rdfs:label "Semantic memory"@en .
+memory:ProceduralMemory a owl:Class ; rdfs:subClassOf memory:MemoryRecord ; rdfs:label "Procedural memory"@en .
+memory:Episode a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Source episode"@en .
+memory:TimelineEntry a owl:Class ; rdfs:subClassOf cubo:Event ; rdfs:label "Timeline entry"@en .
+memory:MemoryConsolidation a owl:Class ; rdfs:subClassOf cubo:Activity ; rdfs:label "Memory consolidation"@en .
+memory:MemoryStatus a owl:Class ; rdfs:subClassOf cubo:Concept ; rdfs:label "Memory status"@en .
+
+memory:recordsClaim a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range cubo:Claim ; rdfs:label "records claim"@en .
+memory:belongsToMemorySpace a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:MemorySpace ; rdfs:label "belongs to memory space"@en .
+memory:generatedFromEpisode a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:Episode ; rdfs:label "generated from episode"@en .
+memory:hasTimelineEntry a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:TimelineEntry ; rdfs:label "has timeline entry"@en .
+memory:supersedes a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:MemoryRecord ; rdfs:label "supersedes"@en .
+memory:contradicts a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:MemoryRecord ; rdfs:label "contradicts"@en .
+memory:consolidatesInput a owl:ObjectProperty ; rdfs:domain memory:MemoryConsolidation ; rdfs:range memory:MemoryRecord ; rdfs:label "consolidates input"@en .
+memory:producesMemory a owl:ObjectProperty ; rdfs:domain memory:MemoryConsolidation ; rdfs:range memory:MemoryRecord ; rdfs:label "produces memory"@en .
+memory:hasMemoryStatus a owl:ObjectProperty, owl:FunctionalProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range memory:MemoryStatus ; rdfs:label "has memory status"@en .
+memory:hasEvidence a owl:ObjectProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range cubo:Evidence ; rdfs:label "has evidence"@en .
+
+memory:salience a owl:DatatypeProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range xsd:decimal ; rdfs:label "salience"@en .
+memory:lastAccessedAt a owl:DatatypeProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range xsd:dateTime ; rdfs:label "last accessed at"@en .
+memory:retainedUntil a owl:DatatypeProperty ; rdfs:domain memory:MemoryRecord ; rdfs:range xsd:dateTime ; rdfs:label "retained until"@en .
+
+memory:Active a memory:MemoryStatus ; rdfs:label "Active"@en .
+memory:Superseded a memory:MemoryStatus ; rdfs:label "Superseded"@en .
+memory:Quarantined a memory:MemoryStatus ; rdfs:label "Quarantined"@en .
+memory:Forgotten a memory:MemoryStatus ; rdfs:label "Forgotten"@en .

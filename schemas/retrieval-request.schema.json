@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/retrieval-request.schema.json",
+  "title": "Tenant-scoped hybrid retrieval request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id",
+    "tenant_id",
+    "brain_id",
+    "requester_id",
+    "query",
+    "purpose",
+    "modes",
+    "allowed_classifications",
+    "limit",
+    "as_of"
+  ],
+  "properties": {
+    "request_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{7,127}$" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "requester_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "query": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "purpose": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "modes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["keyword", "vector", "graph"] }
+    },
+    "allowed_classifications": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["public", "internal", "confidential", "restricted"] }
+    },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "as_of": { "type": "string", "format": "date-time" },
+    "query_embedding": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "items": { "type": "number" }
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "entity_ids": {
+          "type": "array",
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "modules": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" }
+        },
+        "valid_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "modes": { "type": "array", "contains": { "const": "vector" } }
+        }
+      },
+      "then": {
+        "properties": { "query_embedding": { "type": "array" } },
+        "required": ["query_embedding"]
+      }
+    }
+  ]
+}

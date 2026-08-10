@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/guard-decision.schema.json",
+  "title": "Ontology Guard decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "proposal_id",
+    "decision",
+    "reasons",
+    "obligations",
+    "policy_version",
+    "policy_fingerprint",
+    "ontology_version",
+    "proposal_hash",
+    "verification_action",
+    "decided_at",
+    "expires_at",
+    "effect_executed",
+    "loop"
+  ],
+  "properties": {
+    "decision_id": { "type": "string", "pattern": "^guard:[A-Za-z0-9-]{8,120}$" },
+    "proposal_id": { "type": "string", "pattern": "^proposal:[A-Za-z0-9_.:-]{8,119}$" },
+    "decision": { "enum": ["allow", "deny"] },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "obligations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "policy_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "policy_fingerprint": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "ontology_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "proposal_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "verification_action": { "type": ["string", "null"], "maxLength": 256 },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "effect_executed": { "const": false },
+    "loop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_proposals",
+        "repeated_action_calls",
+        "maximum_steps",
+        "maximum_repeated_action_calls"
+      ],
+      "properties": {
+        "session_proposals": { "type": "integer", "minimum": 1 },
+        "repeated_action_calls": { "type": "integer", "minimum": 1 },
+        "maximum_steps": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "maximum_repeated_action_calls": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix customer: <https://github.com/diogocaspary/cortex-universal/ontology/customer#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/customer>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+customer:CustomerAccount a owl:Class ; rdfs:subClassOf cubo:Entity .
+customer:CustomerRole a owl:Class ; rdfs:subClassOf cubo:Role .
+customer:LifecycleStage a owl:Class ; rdfs:subClassOf cubo:State .
+customer:Segment a owl:Class ; rdfs:subClassOf cubo:Concept .
+customer:Journey a owl:Class ; rdfs:subClassOf cubo:Activity .
+customer:JourneyStage a owl:Class ; rdfs:subClassOf cubo:State .
+customer:Opportunity a owl:Class ; rdfs:subClassOf cubo:Entity .
+
+customer:representedBy a owl:ObjectProperty ; rdfs:domain customer:CustomerAccount ; rdfs:range cubo:Agent .
+customer:hasLifecycleStage a owl:ObjectProperty ; rdfs:domain customer:CustomerAccount ; rdfs:range customer:LifecycleStage .
+customer:belongsToSegment a owl:ObjectProperty ; rdfs:domain customer:CustomerAccount ; rdfs:range customer:Segment .
+customer:hasJourney a owl:ObjectProperty ; rdfs:domain customer:CustomerAccount ; rdfs:range customer:Journey .
+customer:hasOpportunity a owl:ObjectProperty ; rdfs:domain customer:CustomerAccount ; rdfs:range customer:Opportunity .
+
+customer:LeadStage a customer:LifecycleStage .
+customer:ProspectStage a customer:LifecycleStage .
+customer:ActiveCustomerStage a customer:LifecycleStage .
+customer:FormerCustomerStage a customer:LifecycleStage .

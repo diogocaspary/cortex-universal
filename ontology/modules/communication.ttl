@@ -1,0 +1,25 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix communication: <https://github.com/diogocaspary/cortex-universal/ontology/communication#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/communication>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+communication:Channel a owl:Class ; rdfs:subClassOf cubo:Resource .
+communication:Conversation a owl:Class ; rdfs:subClassOf cubo:Activity .
+communication:Message a owl:Class ; rdfs:subClassOf cubo:Resource .
+communication:Participant a owl:Class ; rdfs:subClassOf cubo:Relationship .
+communication:Intent a owl:Class ; rdfs:subClassOf cubo:Concept .
+communication:DeliveryEvent a owl:Class ; rdfs:subClassOf cubo:Event .
+
+communication:usesChannel a owl:ObjectProperty ; rdfs:domain communication:Conversation ; rdfs:range communication:Channel .
+communication:hasMessage a owl:ObjectProperty ; rdfs:domain communication:Conversation ; rdfs:range communication:Message .
+communication:sentBy a owl:ObjectProperty ; rdfs:domain communication:Message ; rdfs:range cubo:Agent .
+communication:addressedTo a owl:ObjectProperty ; rdfs:domain communication:Message ; rdfs:range cubo:Agent .
+communication:expressesIntent a owl:ObjectProperty ; rdfs:domain communication:Message ; rdfs:range communication:Intent .
+communication:contentReference a owl:DatatypeProperty ; rdfs:domain communication:Message ; rdfs:range xsd:string .
+communication:contentHash a owl:DatatypeProperty ; rdfs:domain communication:Message ; rdfs:range xsd:string .

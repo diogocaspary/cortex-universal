@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/workforce-heartbeat.schema.json",
+  "title": "Evidence-backed workforce heartbeat",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tenant_id",
+    "brain_id",
+    "classification",
+    "agent_id",
+    "status",
+    "current_work_item_id",
+    "observed_at",
+    "evidence_reference",
+    "idempotency_key"
+  ],
+  "properties": {
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "brain_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "agent_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" },
+    "status": { "enum": ["idle", "working", "blocked", "degraded", "offline"] },
+    "current_work_item_id": {
+      "type": ["string", "null"],
+      "pattern": "^work:[a-f0-9]{32}$"
+    },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "evidence_reference": { "type": "string", "format": "uri", "maxLength": 2048 },
+    "idempotency_key": { "type": "string", "minLength": 8, "maxLength": 256 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "working" } } },
+      "then": { "properties": { "current_work_item_id": { "type": "string" } } }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["idle", "offline"] } } },
+      "then": { "properties": { "current_work_item_id": { "type": "null" } } }
+    }
+  ]
+}

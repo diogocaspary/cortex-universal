@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/source-registry.schema.json",
+  "title": "Trusted evidence source registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "sources"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "sources": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "environments",
+        "tenant_ids",
+        "provenance_systems",
+        "maximum_classification",
+        "attestation"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{2,255}$" },
+        "kind": {
+          "enum": ["system-of-record", "authoritative-feed", "human-attested", "test-fixture"]
+        },
+        "environments": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["development", "test", "staging", "production"] }
+        },
+        "tenant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+        },
+        "provenance_systems": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+        },
+        "maximum_classification": {
+          "enum": ["public", "internal", "confidential", "restricted"]
+        },
+        "attestation": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["method", "reason"],
+              "properties": {
+                "method": { "const": "none" },
+                "reason": { "const": "conformance-fixture-only" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["method", "key_id", "public_key_pem"],
+              "properties": {
+                "method": { "const": "ed25519" },
+                "key_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+                "public_key_pem": {
+                  "type": "string",
+                  "pattern": "^-----BEGIN PUBLIC KEY-----[\\s\\S]+-----END PUBLIC KEY-----\\n?$",
+                  "maxLength": 4096
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix audit: <https://github.com/diogocaspary/cortex-universal/ontology/audit#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/audit>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core> ;
+    owl:versionInfo "0.1.0" .
+
+audit:AuditEvent a owl:Class ; rdfs:subClassOf cubo:Event .
+audit:AuthorizationDecision a owl:Class ; rdfs:subClassOf audit:AuditEvent .
+audit:ExecutionRecord a owl:Class ; rdfs:subClassOf audit:AuditEvent .
+audit:ChangeSet a owl:Class ; rdfs:subClassOf cubo:Resource .
+
+audit:actor a owl:ObjectProperty ; rdfs:domain audit:AuditEvent ; rdfs:range cubo:Agent .
+audit:relatedAction a owl:ObjectProperty ; rdfs:domain audit:AuditEvent ; rdfs:range cubo:Action .
+audit:changedEntity a owl:ObjectProperty ; rdfs:domain audit:ChangeSet ; rdfs:range cubo:Entity .
+audit:decision a owl:DatatypeProperty ; rdfs:domain audit:AuthorizationDecision ; rdfs:range xsd:string .
+audit:reason a owl:DatatypeProperty ; rdfs:domain audit:AuditEvent ; rdfs:range xsd:string .
+audit:requestId a owl:DatatypeProperty ; rdfs:domain audit:AuditEvent ; rdfs:range xsd:string .

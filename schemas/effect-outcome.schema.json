@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/effect-outcome.schema.json",
+  "title": "Observed and verified effect outcome",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "execution_id",
+    "proposal_id",
+    "tenant_id",
+    "action_key",
+    "status",
+    "system_of_record",
+    "observation_reference",
+    "observation_hash",
+    "observed_at",
+    "expected_effects",
+    "observed_effects",
+    "verification",
+    "evidence_ids"
+  ],
+  "properties": {
+    "execution_id": { "type": "string", "pattern": "^execution:[A-Za-z0-9-]{8,120}$" },
+    "proposal_id": { "type": "string", "pattern": "^proposal:[A-Za-z0-9_.:-]{8,119}$" },
+    "tenant_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "action_key": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "status": { "enum": ["succeeded", "failed", "indeterminate"] },
+    "system_of_record": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "observation_reference": { "type": "string", "minLength": 3, "maxLength": 2048 },
+    "observation_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "expected_effects": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "observed_effects": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "verification": { "enum": ["verified", "mismatch", "unavailable"] },
+    "evidence_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    }
+  }
+}

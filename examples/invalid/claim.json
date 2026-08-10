@@ -1,0 +1,11 @@
+{
+  "id": "x",
+  "tenant_id": "",
+  "subject": { "id": "customer-1" },
+  "predicate": "hasLifecycleStage",
+  "object": "active",
+  "status": "trusted-because-the-llm-said-so",
+  "confidence": 1.5,
+  "classification": "secret",
+  "version": 0
+}

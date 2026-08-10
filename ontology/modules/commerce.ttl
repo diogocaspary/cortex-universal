@@ -1,0 +1,29 @@
+@prefix cubo: <https://github.com/diogocaspary/cortex-universal/ontology/core#> .
+@prefix commerce: <https://github.com/diogocaspary/cortex-universal/ontology/commerce#> .
+@prefix customer: <https://github.com/diogocaspary/cortex-universal/ontology/customer#> .
+@prefix offering: <https://github.com/diogocaspary/cortex-universal/ontology/offering#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/diogocaspary/cortex-universal/ontology/commerce>
+    a owl:Ontology ;
+    owl:imports <https://github.com/diogocaspary/cortex-universal/ontology/core>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/customer>,
+        <https://github.com/diogocaspary/cortex-universal/ontology/offering> ;
+    owl:versionInfo "0.1.0" .
+
+commerce:Cart a owl:Class ; rdfs:subClassOf cubo:Entity .
+commerce:Order a owl:Class ; rdfs:subClassOf cubo:Entity .
+commerce:OrderItem a owl:Class ; rdfs:subClassOf cubo:Entity .
+commerce:Subscription a owl:Class ; rdfs:subClassOf cubo:Entity .
+commerce:Renewal a owl:Class ; rdfs:subClassOf cubo:Event .
+commerce:Cancellation a owl:Class ; rdfs:subClassOf cubo:Event .
+commerce:Fulfillment a owl:Class ; rdfs:subClassOf cubo:Activity .
+
+commerce:placedBy a owl:ObjectProperty ; rdfs:domain commerce:Order ; rdfs:range customer:CustomerAccount .
+commerce:hasItem a owl:ObjectProperty ; rdfs:domain commerce:Order ; rdfs:range commerce:OrderItem .
+commerce:referencesOffer a owl:ObjectProperty ; rdfs:domain commerce:OrderItem ; rdfs:range offering:Offer .
+commerce:subscribesTo a owl:ObjectProperty ; rdfs:domain commerce:Subscription ; rdfs:range offering:Plan .
+commerce:ownedBy a owl:ObjectProperty ; rdfs:domain commerce:Subscription ; rdfs:range customer:CustomerAccount .
+commerce:quantity a owl:DatatypeProperty ; rdfs:domain commerce:OrderItem ; rdfs:range xsd:decimal .

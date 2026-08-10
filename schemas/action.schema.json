@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/diogocaspary/cortex-universal/schemas/action.schema.json",
+  "title": "Trusted action definition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action_key",
+    "capability",
+    "risk_level",
+    "preconditions",
+    "expected_effects",
+    "required_permissions",
+    "approval_policy",
+    "idempotency_required",
+    "reversible",
+    "compensation_action",
+    "verification_action",
+    "allowed_resource_classifications"
+  ],
+  "properties": {
+    "action_key": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "capability": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" },
+    "risk_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+    "preconditions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+    },
+    "expected_effects": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+    },
+    "required_permissions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$" }
+    },
+    "approval_policy": {
+      "enum": ["never", "policy", "human", "dual-control", "prohibited"]
+    },
+    "idempotency_required": { "type": "boolean" },
+    "reversible": { "type": "boolean" },
+    "compensation_action": { "type": ["string", "null"], "maxLength": 128 },
+    "verification_action": { "type": "string", "minLength": 3, "maxLength": 128 },
+    "allowed_resource_classifications": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["public", "internal", "confidential", "restricted"] }
+    },
+    "extensions": { "type": "object", "additionalProperties": true }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "reversible": { "const": true } }, "required": ["reversible"] },
+      "then": { "properties": { "compensation_action": { "type": "string", "minLength": 3 } } }
+    },
+    {
+      "if": {
+        "properties": { "risk_level": { "type": "integer", "minimum": 3 } },
+        "required": ["risk_level"]
+      },
+      "then": {
+        "properties": {
+          "approval_policy": { "enum": ["human", "dual-control", "prohibited"] }
+        }
+      }
+    }
+  ]
+}
