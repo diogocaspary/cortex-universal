@@ -95,7 +95,7 @@ function Test-DockerReady {
 
 function Assert-NodeReady {
   if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-    throw 'Instale Docker Desktop ou Node.js 22.13+ antes de continuar.'
+    throw 'Instale Docker Desktop ou Node.js 22.16+ antes de continuar.'
   }
   $major = [int](& node -p "Number(process.versions.node.split('.')[0])")
   if ($LASTEXITCODE -ne 0 -or $major -lt 22) {
@@ -103,7 +103,12 @@ function Assert-NodeReady {
   }
   & node -e "require('node:sqlite')" 2>$null
   if ($LASTEXITCODE -ne 0) {
-    throw 'O modo nativo requer Node.js 22.13+ com node:sqlite.'
+    throw 'O modo nativo requer Node.js 22.16+ com node:sqlite.'
+  }
+  # O motor local exige FTS5, ausente no SQLite embutido do Node 22.13 a 22.15.
+  & node -e "new (require('node:sqlite').DatabaseSync)(':memory:').exec('CREATE VIRTUAL TABLE t USING fts5(x)')" 2>$null
+  if ($LASTEXITCODE -ne 0) {
+    throw 'Este Node.js nao traz SQLite com FTS5; use Node.js 22.16+ ou 24+.'
   }
   if (-not (Get-Command npm.cmd -ErrorAction SilentlyContinue)) {
     throw 'npm nao foi encontrado junto com o Node.js.'

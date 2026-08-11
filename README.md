@@ -45,11 +45,13 @@ The repository deliberately separates meaning from execution:
 
 ## Run on a Windows PC
 
-Download and extract the release ZIP, then double-click `INSTALAR-NO-WINDOWS.cmd`. The installer generates a cryptographically random local token, uses Docker Desktop when available with Node.js 22.13+ as a fallback, and opens `http://127.0.0.1:8080/dashboard/`. Select the generated `.env` to connect; the browser keeps the token only in memory. See the [local computer guide](local/README.md).
+Download and extract the release ZIP, then double-click `INSTALAR-NO-WINDOWS.cmd`. The installer generates a cryptographically random local token, uses Docker Desktop when available with Node.js 22.16+ as a fallback, and opens `http://127.0.0.1:8080/dashboard/`. Select the generated `.env` to connect; the browser keeps the token only in memory. See the [local computer guide](local/README.md).
 
 ## Quick start
 
-Requirements: Node.js 22.13 or newer (with `node:sqlite`).
+Requirements: Node.js 22.16 or newer (with `node:sqlite`). The embedded engine needs SQLite
+compiled with FTS5, which releases 22.13 through 22.15 do not provide; on those versions every
+local ingestion fails with `no such module: fts5`. Node.js 24 is the version pinned in `.nvmrc`.
 
 ```bash
 npm ci

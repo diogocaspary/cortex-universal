@@ -10,7 +10,7 @@
 
 Use `INICIAR-NO-WINDOWS.cmd`, `PARAR-NO-WINDOWS.cmd`, `STATUS-NO-WINDOWS.cmd` e `TESTAR-NO-WINDOWS.cmd` depois da instalação. A chave não é exibida e `.env` não entra no Git.
 
-Pré-requisito: Docker Desktop em execução **ou** Node.js 22.13 ou superior com `node:sqlite`. O instalador não baixa programas nem pede privilégios de administrador. A primeira instalação precisa de internet para baixar a imagem e/ou as dependências bloqueadas pelo `package-lock.json`.
+Pré-requisito: Docker Desktop em execução **ou** Node.js 22.16 ou superior com `node:sqlite`. O instalador não baixa programas nem pede privilégios de administrador. A primeira instalação precisa de internet para baixar a imagem e/ou as dependências bloqueadas pelo `package-lock.json`.
 
 ## Linux ou macOS
 

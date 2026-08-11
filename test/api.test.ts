@@ -495,6 +495,39 @@ describe('reference API', () => {
       hits: [],
       gaps: [{ code: 'no_results' }],
     });
+
+    // A natural-language question carries words the evidence does not contain. Requiring every
+    // term would silence the highest-weighted channel for the questions agents actually ask.
+    const question = await app.inject({
+      method: 'POST',
+      url: '/v1/brain/retrieve',
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        ...retrieval,
+        request_id: 'request:question:1',
+        modes: ['keyword'],
+        query: 'Qual é a situação do cliente 42 hoje?',
+      },
+    });
+    expect(question.statusCode).toBe(200);
+    expect(question.json()).toMatchObject({
+      hits: [{ id: 'evidence:customer-42-status' }],
+    });
+
+    // A question made only of words absent from the corpus must still return nothing.
+    const absent = await app.inject({
+      method: 'POST',
+      url: '/v1/brain/retrieve',
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        ...retrieval,
+        request_id: 'request:question:2',
+        modes: ['keyword'],
+        query: 'Qual é o saldo do fornecedor logístico?',
+      },
+    });
+    expect(absent.statusCode).toBe(200);
+    expect(absent.json()).toMatchObject({ hits: [], gaps: [{ code: 'no_results' }] });
   });
 
   it('coordinates registered agents and records cortex activity without executing effects', async () => {

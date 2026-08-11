@@ -39,6 +39,7 @@ Exemplo de configuração de cliente local, substituindo os caminhos absolutos:
 | -------------------------------- | ------------------------------------------------- |
 | `cortex_manifest`                | ler inventário semântico                          |
 | `cortex_explore_graph`           | ler subgrafo limitado                             |
+| `cortex_reasoning_report`        | ler o relatório RDFS/OWL-RL limitado              |
 | `cortex_ingest_evidence`         | indexar evidência validada e idempotente          |
 | `cortex_retrieve_memory`         | consultar canais autorizados                      |
 | `cortex_select_attention`        | calcular conjunto de trabalho                     |
@@ -46,6 +47,7 @@ Exemplo de configuração de cliente local, substituindo os caminhos absolutos:
 | `cortex_evaluate_metacognition`  | medir calibração                                  |
 | `cortex_propose_consolidation`   | gerar proposta com revisão obrigatória            |
 | `cortex_evaluate_policy`         | avaliar política, sem executar a decisão          |
+| `cortex_evaluate_tool_proposal`  | julgar proposta de ferramenta, sem efeito algum   |
 | `cortex_start_agent_session`     | criar coordenação auditável, sem iniciar executor |
 | `cortex_get_agent_session`       | ler uma sessão no escopo tenant/brain             |
 | `cortex_handoff_agent`           | transferir responsabilidade com evidência         |

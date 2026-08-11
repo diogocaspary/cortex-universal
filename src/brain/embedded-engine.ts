@@ -3,7 +3,12 @@ import { chmodSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { DatabaseSync, type SQLInputValue } from 'node:sqlite';
 import type { CortexGraphSnapshot } from '../graph.js';
-import { detectKnowledgeGaps, reciprocalRankFusion } from '../retrieval.js';
+import {
+  detectKnowledgeGaps,
+  queryTokens,
+  reciprocalRankFusion,
+  vectorMaximumDistance,
+} from '../retrieval.js';
 import type { Classification } from '../policy.js';
 import type { AgentSession } from '../agents/coordinator.js';
 import type {
@@ -74,26 +79,16 @@ function cosineSimilarity(left: number[], right: number[]): number {
   return Math.max(0, dot / Math.sqrt(leftMagnitude * rightMagnitude));
 }
 
-function searchTokens(value: string): string[] {
-  return [
-    ...new Set(
-      (
-        value
-          .normalize('NFKC')
-          .toLocaleLowerCase('pt-BR')
-          .match(/[\p{L}\p{N}_-]+/gu) ?? []
-      )
-        .filter((token) => token.length > 1)
-        .slice(0, 24),
-    ),
-  ];
-}
-
+/**
+ * Terms are combined with OR so a natural-language question still reaches the channel; bm25
+ * ranks documents that match more, and rarer, terms first. Requiring every term would make the
+ * highest-weighted channel silent for any query carrying ordinary sentence words.
+ */
 function ftsExpression(query: string): string | null {
-  const tokens = searchTokens(query);
+  const tokens = queryTokens(query);
   return tokens.length === 0
     ? null
-    : tokens.map((token) => `"${token.replaceAll('"', '""')}"*`).join(' AND ');
+    : tokens.map((token) => `"${token.replaceAll('"', '""')}"*`).join(' OR ');
 }
 
 function likePattern(value: string): string {
@@ -107,7 +102,7 @@ function parseStringArray(value: string): string[] {
 
 function excerpt(value: string, query: string): string {
   const normalized = value.replace(/\s+/gu, ' ').trim();
-  const token = searchTokens(query)[0];
+  const token = queryTokens(query)[0];
   const match = token ? normalized.toLocaleLowerCase('pt-BR').indexOf(token) : -1;
   const start = Math.max(0, match < 0 ? 0 : match - 80);
   const selection = normalized.slice(start, start + 360);
@@ -535,13 +530,18 @@ export class EmbeddedBrainEngine implements BrainEngine {
     }
 
     if (request.modes.includes('vector') && queryEmbedding) {
+      // Mesmo teto do adaptador PostgreSQL, expresso em similaridade: distância = 1 - similaridade.
+      // Sem ele o canal devolveria o vizinho menos ruim como se fosse resposta, e a lacuna
+      // explícita nunca apareceria.
+      const minimumSimilarity = 1 - vectorMaximumDistance();
       const ranked = candidates
         .flatMap((row) => {
           if (!row.embedding_json) return [];
           const vector = JSON.parse(row.embedding_json) as number[];
-          return [
-            { document_pk: row.document_pk, similarity: cosineSimilarity(queryEmbedding, vector) },
-          ];
+          const similarity = cosineSimilarity(queryEmbedding, vector);
+          return similarity > minimumSimilarity
+            ? [{ document_pk: row.document_pk, similarity }]
+            : [];
         })
         .sort(
           (left, right) =>
@@ -563,7 +563,7 @@ export class EmbeddedBrainEngine implements BrainEngine {
         relationParameters.push(entityId, entityId);
       }
       if (graphConditions.length === 0) {
-        for (const token of searchTokens(request.query).slice(0, 8)) {
+        for (const token of queryTokens(request.query).slice(0, 8)) {
           graphConditions.push("(e.entity_id LIKE ? ESCAPE '\\' OR e.label LIKE ? ESCAPE '\\')");
           entityParameters.push(likePattern(token), likePattern(token));
           relationConditions.push(

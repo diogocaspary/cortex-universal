@@ -1,3 +1,273 @@
+/**
+ * Function words carry no discriminative weight in a query. They are removed from the query
+ * only; the index keeps every token, so an exact lookup for one of these still works.
+ */
+const QUERY_STOPWORDS = new Set([
+  // pt-BR determiners, prepositions and contractions
+  'os',
+  'as',
+  'um',
+  'uma',
+  'uns',
+  'umas',
+  'ao',
+  'aos',
+  'da',
+  'do',
+  'das',
+  'dos',
+  'na',
+  'no',
+  'nas',
+  'nos',
+  'num',
+  'numa',
+  'pelo',
+  'pela',
+  'pelos',
+  'pelas',
+  'de',
+  'em',
+  'por',
+  'para',
+  'pra',
+  'com',
+  'sem',
+  'sob',
+  'sobre',
+  'entre',
+  'ate',
+  'até',
+  'apos',
+  'após',
+  'desde',
+  // pt-BR conjunctions and interrogatives
+  'ou',
+  'mas',
+  'porem',
+  'porém',
+  'porque',
+  'pois',
+  'como',
+  'quando',
+  'se',
+  'que',
+  'qual',
+  'quais',
+  'quem',
+  'onde',
+  'quanto',
+  'quantos',
+  'quanta',
+  'quantas',
+  'enquanto',
+  'portanto',
+  // pt-BR pronouns and demonstratives
+  'eu',
+  'tu',
+  'ele',
+  'ela',
+  'eles',
+  'elas',
+  'voce',
+  'você',
+  'voces',
+  'vocês',
+  'me',
+  'te',
+  'lhe',
+  'lhes',
+  'meu',
+  'minha',
+  'meus',
+  'minhas',
+  'teu',
+  'tua',
+  'seu',
+  'sua',
+  'seus',
+  'suas',
+  'nosso',
+  'nossa',
+  'nossos',
+  'nossas',
+  'este',
+  'esta',
+  'estes',
+  'estas',
+  'esse',
+  'essa',
+  'esses',
+  'essas',
+  'aquele',
+  'aquela',
+  'aqueles',
+  'aquelas',
+  'isso',
+  'isto',
+  'aquilo',
+  // pt-BR copulas, auxiliaries and common adverbs
+  'ser',
+  'sou',
+  'sao',
+  'são',
+  'era',
+  'eram',
+  'foi',
+  'foram',
+  'seja',
+  'sejam',
+  'esta',
+  'está',
+  'estao',
+  'estão',
+  'estava',
+  'estar',
+  'ter',
+  'tem',
+  'têm',
+  'tinha',
+  'haver',
+  'ha',
+  'há',
+  'havia',
+  'nao',
+  'não',
+  'sim',
+  'ja',
+  'já',
+  'tambem',
+  'também',
+  'muito',
+  'mais',
+  'menos',
+  // English function words, for mixed-language corpora. Short ones matter: the length filter
+  // above only drops single characters, so 'is' and 'to' would otherwise survive as query terms.
+  'is',
+  'be',
+  'to',
+  'of',
+  'in',
+  'on',
+  'at',
+  'by',
+  'or',
+  'if',
+  'it',
+  'an',
+  'we',
+  'so',
+  'up',
+  'my',
+  'he',
+  'were',
+  'being',
+  'both',
+  'same',
+  'such',
+  'very',
+  'too',
+  'own',
+  'the',
+  'and',
+  'for',
+  'are',
+  'but',
+  'not',
+  'you',
+  'all',
+  'can',
+  'was',
+  'has',
+  'had',
+  'have',
+  'does',
+  'did',
+  'what',
+  'which',
+  'when',
+  'where',
+  'who',
+  'how',
+  'why',
+  'with',
+  'from',
+  'this',
+  'that',
+  'these',
+  'those',
+  'there',
+  'their',
+  'they',
+  'them',
+  'its',
+  'his',
+  'her',
+  'will',
+  'would',
+  'should',
+  'could',
+  'been',
+  'into',
+  'about',
+  'over',
+  'than',
+  'then',
+]);
+
+/**
+ * Deterministic query tokenizer shared by every storage adapter, so two backends cannot
+ * disagree about what a query means.
+ */
+export function searchTokens(value: string): string[] {
+  return [
+    ...new Set(
+      (
+        value
+          .normalize('NFKC')
+          .toLocaleLowerCase('pt-BR')
+          .match(/[\p{L}\p{N}_-]+/gu) ?? []
+      )
+        .filter((token) => token.length > 1)
+        .slice(0, 24),
+    ),
+  ];
+}
+
+/**
+ * Query tokens without function words. A query made only of function words keeps its raw
+ * tokens, so the channel degrades to a weak match instead of falling silent.
+ */
+export function queryTokens(value: string): string[] {
+  const tokens = searchTokens(value);
+  const meaningful = tokens.filter((token) => !QUERY_STOPWORDS.has(token));
+  return meaningful.length > 0 ? meaningful : tokens;
+}
+
+/**
+ * Distância de cosseno máxima para um vizinho contar como evidência.
+ *
+ * Sem teto, a busca vetorial devolve os N mais próximos **sempre**, por mais distantes que
+ * estejam: uma pergunta fora do acervo volta com resultados e sem lacuna, e quem chama não tem
+ * como distinguir "achei" de "isto foi o menos ruim". Um cérebro que nunca diz "não sei" ensina
+ * o agente a ignorá-lo.
+ *
+ * O padrão saiu de medição contra um acervo real com text-embedding-3-large@1536:
+ * documento correto entre 0,25 e 0,37; documento errado a partir de 0,59; pergunta alheia a
+ * partir de 0,70. 0,55 fica no vale, com margem dos dois lados.
+ *
+ * ⚠️ Distâncias comprimem conforme o acervo cresce e mudam com o modelo de embedding. Meça de
+ * novo antes de confiar no padrão em outro corpus: `CORTEX_VECTOR_MAX_DISTANCE` ajusta, e
+ * um valor >= 2 desliga o corte (cosseno nunca passa de 2).
+ */
+export function vectorMaximumDistance(configured?: string): number {
+  const value = Number(configured ?? process.env.CORTEX_VECTOR_MAX_DISTANCE ?? '0.55');
+  if (!Number.isFinite(value) || value <= 0) {
+    throw new Error('CORTEX_VECTOR_MAX_DISTANCE must be a positive number.');
+  }
+  return value;
+}
+
 export interface RankedItem {
   id: string;
 }

@@ -2,7 +2,7 @@
 
 Versão documentada: **0.6.0**
 Estado do pacote: **experimental**  
-Runtime de referência: **Node.js 22.13+**, TypeScript, Fastify e SQLite/FTS5  
+Runtime de referência: **Node.js 22.16+**, TypeScript, Fastify e SQLite/FTS5  
 Licença do repositório: **MIT**
 
 Este documento explica o que o Cortex Universal é, como a ontologia organiza o sistema, como os
@@ -902,7 +902,11 @@ Segredos não devem entrar no grafo, em prompts, logs ou exemplos. Use referênc
 
 ### 18.1 Windows
 
-Pré-requisito: Docker Desktop em execução ou Node.js 22.13+ com `node:sqlite`.
+Pré-requisito: Docker Desktop em execução ou Node.js 22.16+ com `node:sqlite`.
+
+> O motor local exige SQLite com FTS5. As versões 22.13 a 22.15 do Node.js não trazem essa
+> extensão compilada e falham em toda ingestão com `no such module: fts5`. O `.nvmrc` fixa o
+> Node.js 24. O instalador verifica a extensão diretamente, não apenas o número da versão.
 
 1. Extraia o ZIP para uma pasta permanente.
 2. Execute `INSTALAR-NO-WINDOWS.cmd`.

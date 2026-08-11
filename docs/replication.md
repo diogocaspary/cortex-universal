@@ -25,7 +25,7 @@ cp .env.example .env
 npm run dev
 ```
 
-No Windows, a rota recomendada é extrair o pacote e executar `INSTALAR-NO-WINDOWS.cmd`. Docker Desktop é usado quando estiver ativo; Node.js 22.13+ com `node:sqlite` é o fallback. O instalador não baixa programas, não exige credencial em texto e mantém o bind em loopback.
+No Windows, a rota recomendada é extrair o pacote e executar `INSTALAR-NO-WINDOWS.cmd`. Docker Desktop é usado quando estiver ativo; Node.js 22.16+ com `node:sqlite` é o fallback. O instalador não baixa programas, não exige credencial em texto e mantém o bind em loopback.
 
 O painel fica em `http://127.0.0.1:8080/dashboard/`. Selecione o `.env` local para autenticar sem copiar a chave para URL, cookie ou armazenamento do navegador.
 

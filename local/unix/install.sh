@@ -14,7 +14,7 @@ if [ "${#CURRENT_TOKEN}" -lt 32 ]; then
   elif command -v node >/dev/null 2>&1; then
     TOKEN=$(node -e "process.stdout.write(require('node:crypto').randomBytes(48).toString('base64'))")
   else
-    echo "Instale Docker ou Node.js 22.13+ antes de continuar." >&2
+    echo "Instale Docker ou Node.js 22.16+ antes de continuar." >&2
     exit 1
   fi
   if [ -f .env ]; then
@@ -95,11 +95,13 @@ if [ "$INSTALL_MODE" = docker ]; then
   docker compose up -d --build
   printf '%s\n' docker > runtime/mode
 else
-  command -v node >/dev/null 2>&1 || { echo "Node.js 22.13+ nao encontrado." >&2; exit 1; }
+  command -v node >/dev/null 2>&1 || { echo "Node.js 22.16+ nao encontrado." >&2; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo "npm nao encontrado junto com o Node.js." >&2; exit 1; }
   MAJOR=$(node -p "Number(process.versions.node.split('.')[0])")
-  [ "$MAJOR" -ge 22 ] || { echo "Node.js 22.13+ e obrigatorio." >&2; exit 1; }
-  node -e "require('node:sqlite')" >/dev/null 2>&1 || { echo "Node.js 22.13+ com node:sqlite e obrigatorio." >&2; exit 1; }
+  [ "$MAJOR" -ge 22 ] || { echo "Node.js 22.16+ e obrigatorio." >&2; exit 1; }
+  node -e "require('node:sqlite')" >/dev/null 2>&1 || { echo "Node.js 22.16+ com node:sqlite e obrigatorio." >&2; exit 1; }
+  # O motor local exige FTS5, ausente no SQLite embutido do Node 22.13 a 22.15.
+  node -e "new (require('node:sqlite').DatabaseSync)(':memory:').exec('CREATE VIRTUAL TABLE t USING fts5(x)')" >/dev/null 2>&1 || { echo "Este Node.js nao traz SQLite com FTS5; use Node.js 22.16+ ou 24+." >&2; exit 1; }
   if [ "$EXISTING_MODE" = native ]; then ./local/unix/stop.sh; fi
   npm ci --ignore-scripts
   npm run check
