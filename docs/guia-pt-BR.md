@@ -155,6 +155,6 @@ Esse mapa explica o que o sistema declara saber representar e como governa açã
 
 ## Executar localmente no seu PC
 
-No Windows, extraia o pacote e execute `INSTALAR-NO-WINDOWS.cmd`. Ele cria um token aleatório sem mostrá-lo, usa Docker Desktop quando disponível e cai automaticamente para Node.js 22.13+ com `node:sqlite` quando Docker não estiver ativo. Os atalhos de iniciar, parar e consultar status ficam na raiz. O serviço permanece em `127.0.0.1`, acessível apenas pelo próprio computador, e abre o painel em `http://127.0.0.1:8080/dashboard/`. Selecione o `.env` da pasta para conectar.
+No Windows, extraia o pacote e execute `INSTALAR-NO-WINDOWS.cmd`. Ele cria um token aleatório sem mostrá-lo, usa Docker Desktop quando disponível e cai automaticamente para Node.js 22.16+ com `node:sqlite` quando Docker não estiver ativo. Os atalhos de iniciar, parar e consultar status ficam na raiz. O serviço permanece em `127.0.0.1`, acessível apenas pelo próprio computador, e abre o painel em `http://127.0.0.1:8080/dashboard/`. Selecione o `.env` da pasta para conectar.
 
 Leia também [arquitetura](architecture.md), [modelo ontológico](ontology-model.md), [segurança](security-model.md), [ameaças](threat-model.md) e [replicação](replication.md).

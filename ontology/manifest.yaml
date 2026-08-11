@@ -4,7 +4,7 @@ version: 0.6.0
 status: experimental
 namespace: https://github.com/diogocaspary/cortex-universal/ontology/
 core: ontology/core/cubo-core.ttl
-minimum_node_version: 22.13.0
+minimum_node_version: 22.16.0
 standards:
   - RDF 1.1
   - RDFS 1.1

@@ -22,7 +22,7 @@
   ],
   "type": "module",
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.16.0"
   },
   "scripts": {
     "build": "npm run clean && npm run build:server && npm run build:dashboard",

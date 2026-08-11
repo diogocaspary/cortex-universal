@@ -11,8 +11,17 @@
 
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS unaccent;
 CREATE SCHEMA IF NOT EXISTS cortex;
 REVOKE ALL ON SCHEMA cortex FROM PUBLIC;
+
+-- unaccent() é STABLE, e coluna gerada exige IMMUTABLE. Este invólucro fixa o dicionário,
+-- o que torna a função determinística e utilizável em coluna gerada e em índice.
+-- Sem isto o índice guarda lexemas acentuados e uma busca por "proveniencia" não encontra
+-- "proveniência" — falha diária em corpus português.
+CREATE OR REPLACE FUNCTION cortex.immutable_unaccent(text) RETURNS text
+  LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE
+  AS $$ SELECT public.unaccent('public.unaccent'::regdictionary, $1) $$;
 
 CREATE TABLE IF NOT EXISTS cortex.documents (
   document_pk bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -30,7 +39,8 @@ CREATE TABLE IF NOT EXISTS cortex.documents (
   extensions jsonb NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(extensions) = 'object'),
   source_verification jsonb NOT NULL CHECK (jsonb_typeof(source_verification) = 'object'),
   text_content text NOT NULL,
-  search_vector tsvector GENERATED ALWAYS AS (to_tsvector('simple', text_content)) STORED,
+  search_vector tsvector GENERATED ALWAYS AS
+    (to_tsvector('simple', cortex.immutable_unaccent(text_content))) STORED,
   embedding vector(:embedding_dimensions),
   citations jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(citations) = 'array'),
   contradicts jsonb NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(contradicts) = 'array'),
@@ -309,6 +319,7 @@ CREATE POLICY effect_executions_scope_policy ON cortex.effect_executions
   );
 
 GRANT USAGE ON SCHEMA cortex TO :"cortex_runtime_role";
+GRANT EXECUTE ON FUNCTION cortex.immutable_unaccent(text) TO :"cortex_runtime_role";
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA cortex TO :"cortex_runtime_role";
 GRANT SELECT, INSERT ON
   cortex.documents,

@@ -3,7 +3,12 @@ import { Pool, type PoolClient } from 'pg';
 import type { AgentSession } from '../agents/coordinator.js';
 import type { CortexGraphSnapshot } from '../graph.js';
 import type { Classification } from '../policy.js';
-import { detectKnowledgeGaps, reciprocalRankFusion } from '../retrieval.js';
+import {
+  detectKnowledgeGaps,
+  queryTokens,
+  reciprocalRankFusion,
+  vectorMaximumDistance,
+} from '../retrieval.js';
 import type {
   WorkforceCostEvent,
   WorkforceCostSummary,
@@ -35,25 +40,10 @@ interface DocumentRow {
   source_id: string;
   content_reference: string;
   text_content: string;
-  embedding_text: string | null;
   citations: string[];
   contradicts: string[];
   valid_from: Date | string;
   valid_until: Date | string | null;
-}
-
-interface RelationRow {
-  document_pk: string;
-  subject: string;
-  predicate: string;
-  object: string;
-}
-
-interface EntityRow {
-  document_pk: string;
-  entity_id: string;
-  label: string | null;
-  module: string | null;
 }
 
 function iso(value: Date | string): string {
@@ -72,49 +62,25 @@ function vectorLiteral(value: number[]): string {
   return `[${value.join(',')}]`;
 }
 
-function parseVector(value: string | null): number[] | null {
-  if (!value) return null;
-  const parsed = JSON.parse(value) as unknown;
-  return Array.isArray(parsed) && parsed.every((entry) => typeof entry === 'number')
-    ? parsed
-    : null;
+/**
+ * Monta a tsquery a partir dos termos já filtrados de stopwords.
+ *
+ * Termos ligados por OR e com prefixo (`:*`) para acompanhar o adaptador incorporado, que usa
+ * FTS5 com a mesma semântica. `websearch_to_tsquery` não serve aqui porque liga os termos com
+ * AND, o que faria o canal de maior peso emudecer diante de qualquer pergunta em linguagem
+ * natural. Cada termo vai entre aspas simples para que nenhum caractere seja lido como operador.
+ */
+function tsQuery(tokens: string[]): string {
+  return tokens.map((token) => `'${token.replaceAll("'", "''")}':*`).join(' | ');
 }
 
-function cosineSimilarity(left: number[], right: number[]): number {
-  if (left.length !== right.length) return 0;
-  let dot = 0;
-  let leftMagnitude = 0;
-  let rightMagnitude = 0;
-  for (let index = 0; index < left.length; index += 1) {
-    const leftValue = left[index] ?? 0;
-    const rightValue = right[index] ?? 0;
-    dot += leftValue * rightValue;
-    leftMagnitude += leftValue * leftValue;
-    rightMagnitude += rightValue * rightValue;
-  }
-  return leftMagnitude === 0 || rightMagnitude === 0
-    ? 0
-    : Math.max(0, dot / Math.sqrt(leftMagnitude * rightMagnitude));
-}
-
-function searchTokens(value: string): string[] {
-  return [
-    ...new Set(
-      (
-        value
-          .normalize('NFKC')
-          .toLocaleLowerCase('pt-BR')
-          .match(/[\p{L}\p{N}_-]+/gu) ?? []
-      )
-        .filter((token) => token.length > 1)
-        .slice(0, 24),
-    ),
-  ];
+function likePattern(value: string): string {
+  return `%${value.replaceAll('\\', '\\\\').replaceAll('%', '\\%').replaceAll('_', '\\_')}%`;
 }
 
 function excerpt(value: string, query: string): string {
   const normalized = value.replace(/\s+/gu, ' ').trim();
-  const token = searchTokens(query)[0];
+  const token = queryTokens(query)[0];
   const match = token ? normalized.toLocaleLowerCase('pt-BR').indexOf(token) : -1;
   const start = Math.max(0, match < 0 ? 0 : match - 80);
   const selection = normalized.slice(start, start + 360);
@@ -301,6 +267,8 @@ export class PostgresBrainEngine implements BrainEngine {
     if (request.modes.includes('vector') && !queryEmbedding) {
       throw new Error('query_embedding is required when vector mode is requested.');
     }
+    const tokens = queryTokens(request.query);
+    const maximumDistance = vectorMaximumDistance();
     const rows = await this.#scoped(
       request.tenant_id,
       request.brain_id,
@@ -329,103 +297,121 @@ export class PostgresBrainEngine implements BrainEngine {
             `EXISTS (SELECT 1 FROM cortex.document_entities e WHERE e.document_pk = cortex.documents.document_pk AND e.entity_id = ANY(${add(request.filters.entity_ids)}::text[]))`,
           );
         }
-        const documents = await client.query<DocumentRow>(
-          `SELECT document_pk::text, id, brain_id, classification, source_id,
-                  content_reference, text_content, embedding::text AS embedding_text,
-                  citations, contradicts, valid_from, valid_until
-           FROM cortex.documents WHERE ${conditions.join(' AND ')}
-           ORDER BY document_pk DESC LIMIT 5000`,
-          parameters,
-        );
-        const primaryKeys = documents.rows.map((row) => row.document_pk);
-        const entities =
-          primaryKeys.length === 0
+        const where = conditions.join(' AND ');
+
+        // Profundidade por canal. A fusão precisa de ordenação, não do acervo inteiro: cada
+        // canal devolve seus melhores e o corte final é do `limit` pedido. Buscar tudo e
+        // ordenar em memória impunha um teto silencioso — passado ele, a evidência mais antiga
+        // desaparecia sem lacuna e sem aviso.
+        const depth = Math.min(500, Math.max(50, request.limit * 10));
+        const channels: Array<{ name: string; weight: number; items: Array<{ id: string }> }> = [];
+
+        if (request.modes.includes('keyword') && tokens.length > 0) {
+          const values = [...parameters, tsQuery(tokens), depth];
+          const query = `$${values.length - 1}`;
+          const limit = `$${values.length}`;
+          const matched = await client.query<{ document_pk: string }>(
+            `SELECT document_pk::text
+               FROM cortex.documents
+              WHERE ${where}
+                AND search_vector @@ to_tsquery('simple', cortex.immutable_unaccent(${query}))
+              ORDER BY ts_rank_cd(
+                         search_vector,
+                         to_tsquery('simple', cortex.immutable_unaccent(${query}))
+                       ) DESC,
+                       document_pk DESC
+              LIMIT ${limit}`,
+            values,
+          );
+          channels.push({
+            name: 'keyword',
+            weight: 1,
+            items: matched.rows.map((row) => ({ id: row.document_pk })),
+          });
+        }
+
+        if (request.modes.includes('vector') && queryEmbedding) {
+          const values = [...parameters, vectorLiteral(queryEmbedding), maximumDistance, depth];
+          const vector = `$${values.length - 2}`;
+          const ceiling = `$${values.length - 1}`;
+          const limit = `$${values.length}`;
+          // `<=>` é distância de cosseno: casa com o operador do índice HNSW da migração.
+          // O teto transforma "nada parecido o bastante" em ausência de resultado, e a lacuna
+          // explícita nasce daí — em vez de devolver o vizinho menos ruim como se fosse resposta.
+          const matched = await client.query<{ document_pk: string }>(
+            `SELECT document_pk::text
+               FROM cortex.documents
+              WHERE ${where} AND embedding IS NOT NULL
+                AND embedding <=> ${vector}::vector < ${ceiling}
+              ORDER BY embedding <=> ${vector}::vector, document_pk DESC
+              LIMIT ${limit}`,
+            values,
+          );
+          channels.push({
+            name: 'vector',
+            weight: 0.9,
+            items: matched.rows.map((row) => ({ id: row.document_pk })),
+          });
+        }
+
+        if (request.modes.includes('graph')) {
+          const entityIds = request.filters?.entity_ids ?? [];
+          const patterns = tokens.map(likePattern);
+          if (entityIds.length > 0 || patterns.length > 0) {
+            const values = [...parameters, entityIds, patterns, depth];
+            const ids = `$${values.length - 2}`;
+            const like = `$${values.length - 1}`;
+            const limit = `$${values.length}`;
+            const matched = await client.query<{ document_pk: string }>(
+              `SELECT hit.document_pk::text AS document_pk
+                 FROM (
+                   SELECT e.document_pk
+                     FROM cortex.document_entities e
+                    WHERE e.document_pk IN (SELECT document_pk FROM cortex.documents WHERE ${where})
+                      AND (e.entity_id = ANY(${ids}::text[])
+                           OR e.entity_id ILIKE ANY(${like}::text[])
+                           OR e.label ILIKE ANY(${like}::text[]))
+                   UNION ALL
+                   SELECT r.document_pk
+                     FROM cortex.semantic_relations r
+                    WHERE r.document_pk IN (SELECT document_pk FROM cortex.documents WHERE ${where})
+                      AND (r.subject ILIKE ANY(${like}::text[])
+                           OR r.predicate ILIKE ANY(${like}::text[])
+                           OR r.object ILIKE ANY(${like}::text[]))
+                 ) hit
+                GROUP BY hit.document_pk
+                ORDER BY count(*) DESC, hit.document_pk DESC
+                LIMIT ${limit}`,
+              values,
+            );
+            channels.push({
+              name: 'graph',
+              weight: 0.8,
+              items: matched.rows.map((row) => ({ id: row.document_pk })),
+            });
+          }
+        }
+
+        // Hidrata só o que sobreviveu à fusão. O `embedding` fica de fora de propósito: são
+        // milhares de floats por linha que o chamador nunca usa.
+        const fused = reciprocalRankFusion(channels, { limit: request.limit });
+        const keys = fused.map((result) => result.id);
+        const documents =
+          keys.length === 0
             ? []
             : (
-                await client.query<EntityRow>(
-                  `SELECT document_pk::text, entity_id, label, module
-                   FROM cortex.document_entities WHERE document_pk = ANY($1::bigint[])`,
-                  [primaryKeys],
+                await client.query<DocumentRow>(
+                  `SELECT document_pk::text, id, brain_id, classification, source_id,
+                          content_reference, text_content, citations, contradicts,
+                          valid_from, valid_until
+                     FROM cortex.documents WHERE document_pk = ANY($1::bigint[])`,
+                  [keys],
                 )
               ).rows;
-        const relations =
-          primaryKeys.length === 0
-            ? []
-            : (
-                await client.query<RelationRow>(
-                  `SELECT document_pk::text, subject, predicate, object
-                   FROM cortex.semantic_relations WHERE document_pk = ANY($1::bigint[])`,
-                  [primaryKeys],
-                )
-              ).rows;
-        return { documents: documents.rows, entities, relations };
+        return { fused, documents };
       },
     );
-    const tokens = searchTokens(request.query);
-    const channels: Array<{
-      name: string;
-      weight: number;
-      items: Array<{ id: string }>;
-    }> = [];
-    if (request.modes.includes('keyword')) {
-      channels.push({
-        name: 'keyword',
-        weight: 1,
-        items: rows.documents
-          .map((row) => ({
-            id: row.document_pk,
-            rank: tokens.reduce(
-              (score, token) =>
-                score + (row.text_content.toLocaleLowerCase('pt-BR').includes(token) ? 1 : 0),
-              0,
-            ),
-          }))
-          .filter((row) => row.rank > 0)
-          .sort((left, right) => right.rank - left.rank || right.id.localeCompare(left.id))
-          .map(({ id }) => ({ id })),
-      });
-    }
-    if (request.modes.includes('vector') && queryEmbedding) {
-      channels.push({
-        name: 'vector',
-        weight: 0.9,
-        items: rows.documents
-          .flatMap((row) => {
-            const vector = parseVector(row.embedding_text);
-            return vector
-              ? [{ id: row.document_pk, rank: cosineSimilarity(queryEmbedding, vector) }]
-              : [];
-          })
-          .sort((left, right) => right.rank - left.rank || right.id.localeCompare(left.id))
-          .map(({ id }) => ({ id })),
-      });
-    }
-    if (request.modes.includes('graph')) {
-      const explicitEntities = new Set(request.filters?.entity_ids ?? []);
-      const match = (value: string | null): boolean =>
-        value !== null &&
-        (explicitEntities.has(value) ||
-          tokens.some((token) => value.toLocaleLowerCase('pt-BR').includes(token)));
-      const scores = new Map<string, number>();
-      for (const entity of rows.entities) {
-        if (match(entity.entity_id) || match(entity.label)) {
-          scores.set(entity.document_pk, (scores.get(entity.document_pk) ?? 0) + 1);
-        }
-      }
-      for (const relation of rows.relations) {
-        if (match(relation.subject) || match(relation.predicate) || match(relation.object)) {
-          scores.set(relation.document_pk, (scores.get(relation.document_pk) ?? 0) + 1);
-        }
-      }
-      channels.push({
-        name: 'graph',
-        weight: 0.8,
-        items: [...scores.entries()]
-          .sort(([leftId, left], [rightId, right]) => right - left || rightId.localeCompare(leftId))
-          .map(([id]) => ({ id })),
-      });
-    }
-    const fused = reciprocalRankFusion(channels, { limit: request.limit });
+    const { fused } = rows;
     const byPk = new Map(rows.documents.map((row) => [row.document_pk, row]));
     const byDocumentId = new Map(rows.documents.map((row) => [row.id, row]));
     const hits: RetrievalHit[] = fused.flatMap((result) => {

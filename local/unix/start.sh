@@ -20,10 +20,12 @@ if [ "$MODE" = docker ]; then
   }
   docker compose up -d
 elif [ "$MODE" = native ]; then
-  command -v node >/dev/null 2>&1 || { echo "Node.js 22.13+ nao encontrado." >&2; exit 1; }
+  command -v node >/dev/null 2>&1 || { echo "Node.js 22.16+ nao encontrado." >&2; exit 1; }
   MAJOR=$(node -p "Number(process.versions.node.split('.')[0])")
-  [ "$MAJOR" -ge 22 ] || { echo "Node.js 22.13+ e obrigatorio." >&2; exit 1; }
-  node -e "require('node:sqlite')" >/dev/null 2>&1 || { echo "Node.js 22.13+ com node:sqlite e obrigatorio." >&2; exit 1; }
+  [ "$MAJOR" -ge 22 ] || { echo "Node.js 22.16+ e obrigatorio." >&2; exit 1; }
+  node -e "require('node:sqlite')" >/dev/null 2>&1 || { echo "Node.js 22.16+ com node:sqlite e obrigatorio." >&2; exit 1; }
+  # O motor local exige FTS5, ausente no SQLite embutido do Node 22.13 a 22.15.
+  node -e "new (require('node:sqlite').DatabaseSync)(':memory:').exec('CREATE VIRTUAL TABLE t USING fts5(x)')" >/dev/null 2>&1 || { echo "Este Node.js nao traz SQLite com FTS5; use Node.js 22.16+ ou 24+." >&2; exit 1; }
   [ -f dist/server.js ] || { echo "Build ausente; execute install.sh novamente." >&2; exit 1; }
   if [ -f runtime/cortex.pid ]; then
     PID=$(cat runtime/cortex.pid)
